@@ -1,0 +1,834 @@
+/* ==========================================================================
+   2026-2027 Half-Marathon Training Season - Mobile-First Glassmorphism UI
+   Modeled after oki design system with Strava Athletic Theme
+   ========================================================================== */
+
+:root {
+  --primary: #fc4c02; /* Strava Orange */
+  --primary-light: #ff7438;
+  --primary-dark: #cc3b00;
+  --secondary: #0284c7; /* Athletic Blue */
+  --secondary-light: #38bdf8;
+  --accent: #10b981; /* Emerald Green for Easy/Rest */
+  --amber: #f59e0b; /* Amber Warning / Quality */
+  --purple: #8b5cf6; /* ASICS Peak Purple */
+  
+  --bg-main: #0b1120; /* Deep Obsidian Blue */
+  --bg-card: rgba(15, 23, 42, 0.75);
+  --bg-card-hover: rgba(30, 41, 59, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(252, 76, 2, 0.4);
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  --radius-xl: 20px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 8px 30px rgba(252, 76, 2, 0.2);
+  --shadow-glow-blue: 0 8px 30px rgba(2, 132, 199, 0.2);
+  
+  --font-main: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg-main);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(252, 76, 2, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(2, 132, 199, 0.08) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-bottom: 70px;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* --------------------------------------------------------------------------
+   Hero Section
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  background: linear-gradient(180deg, rgba(252, 76, 2, 0.15) 0%, rgba(11, 17, 32, 0.95) 100%), 
+              url('https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=1600&q=80');
+  background-size: cover;
+  background-position: center 30%;
+  padding: 40px 0 28px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(11, 17, 32, 0.82);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(252, 76, 2, 0.2);
+  color: #ff8b57;
+  border: 1px solid rgba(252, 76, 2, 0.4);
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.hero-badge.blue {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.hero h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  background: linear-gradient(to right, #ffffff 40%, #ff8b57 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.25;
+}
+
+.hero-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   Race Countdowns Grid
+   -------------------------------------------------------------------------- */
+.race-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.race-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.race-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.race-card.race-1::before { background: var(--primary); }
+.race-card.race-2::before { background: #ec4899; }
+.race-card.race-3::before { background: var(--purple); }
+
+.race-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.race-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.race-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.race-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.race-target {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.race-target strong {
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.race-countdown {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--primary-light);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.race-countdown small {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.race-tagline {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Notice / Alert Banner
+   -------------------------------------------------------------------------- */
+.section-alert {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.alert-box {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--glass-border);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  backdrop-filter: blur(8px);
+}
+
+.alert-box.info {
+  border-left-color: var(--secondary);
+}
+
+.alert-box.strava-sync {
+  border-left-color: #fc4c02;
+  background: linear-gradient(90deg, rgba(252, 76, 2, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.alert-header h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.alert-content p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.alert-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Sticky Navigation Bar (Mobile-friendly horizontal scroll)
+   -------------------------------------------------------------------------- */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(11, 17, 32, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 8px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.nav-container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 0;
+}
+
+.nav-container::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.nav-btn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  color: #fff;
+}
+
+.nav-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary-light);
+  box-shadow: 0 2px 12px rgba(252, 76, 2, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Main Content & Tab Panes
+   -------------------------------------------------------------------------- */
+.main-content {
+  padding-top: 20px;
+}
+
+.tab-pane {
+  display: none;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-header {
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.section-header p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Progress Bar Widget
+   -------------------------------------------------------------------------- */
+.stage-progress-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.progress-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.progress-pct {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary-light);
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fc4c02 0%, #ff8b57 100%);
+  border-radius: 50px;
+  transition: width 0.3s ease;
+}
+
+.progress-summary {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* --------------------------------------------------------------------------
+   Week Accordion Card
+   -------------------------------------------------------------------------- */
+.week-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.week-card.current-week {
+  border-color: rgba(252, 76, 2, 0.6);
+  box-shadow: 0 0 16px rgba(252, 76, 2, 0.15);
+}
+
+.week-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: rgba(30, 41, 59, 0.4);
+  user-select: none;
+}
+
+.week-header:hover {
+  background: rgba(51, 65, 85, 0.4);
+}
+
+.week-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.week-number {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #fff;
+}
+
+.week-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.week-focus-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.week-arrow {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+.week-card.expanded .week-arrow {
+  transform: rotate(180deg);
+}
+
+.week-body {
+  display: none;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.week-card.expanded .week-body {
+  display: block;
+}
+
+.week-summary-note {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  border-left: 3px solid var(--secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Training Days List
+   -------------------------------------------------------------------------- */
+.day-item {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 8px;
+  transition: background 0.2s ease;
+}
+
+.day-item:last-child {
+  margin-bottom: 0;
+}
+
+.day-item.completed {
+  opacity: 0.65;
+  background: rgba(16, 185, 129, 0.05);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.day-item-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.day-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.day-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.day-info {
+  flex: 1;
+}
+
+.day-header-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.day-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.day-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.day-tag.quality {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.day-tag.easy {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.day-tag.long {
+  background: rgba(252, 76, 2, 0.2);
+  color: #ff8b57;
+  border: 1px solid rgba(252, 76, 2, 0.3);
+}
+
+.day-tag.race {
+  background: rgba(236, 72, 153, 0.25);
+  color: #f472b6;
+  border: 1px solid rgba(236, 72, 153, 0.4);
+}
+
+.day-title {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.35;
+}
+
+.day-item.completed .day-title {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.day-metrics {
+  display: flex;
+  gap: 12px;
+  margin: 6px 0;
+  font-size: 0.82rem;
+  flex-wrap: wrap;
+}
+
+.metric-pill {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.metric-pill strong {
+  color: #fff;
+}
+
+.day-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Strategy & Timeline Cards (Overview Tab)
+   -------------------------------------------------------------------------- */
+.strategy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.strategy-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.strategy-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.strategy-icon {
+  font-size: 1.4rem;
+}
+
+.strategy-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.strategy-body p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.strategy-keypoint {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  color: #e2e8f0;
+}
+
+/* --------------------------------------------------------------------------
+   Tables (Pacing & Nutrition)
+   -------------------------------------------------------------------------- */
+.custom-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  margin-bottom: 20px;
+  background: var(--bg-card);
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.86rem;
+}
+
+.custom-table th {
+  background: rgba(30, 41, 59, 0.9);
+  padding: 12px 14px;
+  color: #cbd5e1;
+  font-weight: 700;
+  border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
+}
+
+.custom-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+}
+
+.custom-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.custom-table tr:last-child td {
+  border-bottom: none;
+}
+
+.badge-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Footer Bar
+   -------------------------------------------------------------------------- */
+.footer-bar {
+  text-align: center;
+  padding: 30px 16px 20px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--glass-border);
+  margin-top: 40px;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Floating Action Bar
+   -------------------------------------------------------------------------- */
+.quick-action-bar {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 40;
+  display: flex;
+  gap: 8px;
+}
+
+.btn-floating {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(252, 76, 2, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Adjustments
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.88rem;
+  }
+  
+  .race-countdown-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-btn {
+    padding: 7px 13px;
+    font-size: 0.82rem;
+  }
+  
+  .week-header {
+    padding: 12px;
+  }
+  
+  .day-item {
+    padding: 10px;
+  }
+  
+  .custom-table th, .custom-table td {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+}
