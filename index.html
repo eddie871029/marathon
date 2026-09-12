@@ -3,413 +3,622 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>2026-2027 半馬跑季三部曲｜個人化每週 3 練訓練計劃</title>
+  <title>2026-2027 半馬跑季雙人專屬訓練手冊｜TJ & 老婆</title>
   
   <!-- Mobile & PWA Meta -->
   <meta name="theme-color" content="#0b1120">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="華航 2:15~2:20 ➔ 台北馬 攜手完賽 ➔ ASICS 2:10 PB 半馬三階段每週 3 練線上課表">
+  <meta name="description" content="TJ 跑季三部曲 (華航 2:15~2:20 ➔ 台北馬 陪跑 ➔ ASICS 2:10 PB) ＆ 老婆台北馬 2:30 完賽雙人專屬線上課表">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 
-  <!-- Header / Hero Section -->
-  <header class="hero">
-    <div class="hero-overlay"></div>
-    <div class="container hero-content">
-      <div class="hero-badge-wrap">
-        <span class="hero-badge">🏃‍♂️ 2026-2027 HALF MARATHON SEASON</span>
-        <span class="hero-badge blue">⚡ 每週 3 練高質量課表</span>
-      </div>
-      <h1>半馬跑季三部曲訓練計劃</h1>
-      <p class="hero-subtitle">
-        華航馬 (2:15~2:20 穩健打底) ➔ 台北馬 (攜手完賽 21K 低心率有氧) ➔ ASICS 馬 (直攻 2:10 PB 巔峰)
-      </p>
-
-      <!-- Race Countdowns Grid -->
-      <div class="race-countdown-grid">
-        <!-- Race 1: 華航 -->
-        <div class="race-card race-1">
-          <div class="race-card-top">
-            <div class="race-title">✈️ 華航馬拉松</div>
-            <div class="race-date">2026/10/31 (六)</div>
-          </div>
-          <div class="race-meta-row">
-            <div class="race-target">目標：<strong>2:15 ~ 2:20</strong> (均速 6'24"~6'38")</div>
-            <div class="race-countdown" id="countdown-race1">計算中...</div>
-          </div>
-          <div class="race-tagline">【B 級測驗賽】跑季開門哨・檢驗有氧與配速紀律</div>
-        </div>
-
-        <!-- Race 2: 台北馬 -->
-        <div class="race-card race-2">
-          <div class="race-card-top">
-            <div class="race-title">🏅 台北馬拉松</div>
-            <div class="race-date">2026/12/20 (日)</div>
-          </div>
-          <div class="race-meta-row">
-            <div class="race-target">目標：<strong>夫妻攜手完賽</strong> (Z2 歡樂巡航)</div>
-            <div class="race-countdown" id="countdown-race2">計算中...</div>
-          </div>
-          <div class="race-tagline">【甜蜜配速員】頂級氛圍・累積 21K 低心率耐力</div>
-        </div>
-
-        <!-- Race 3: ASICS -->
-        <div class="race-card race-3">
-          <div class="race-card-top">
-            <div class="race-title">👟 ASICS 馬拉松</div>
-            <div class="race-date">2027/02/21 (日)</div>
-          </div>
-          <div class="race-meta-row">
-            <div class="race-target">目標：<strong>2:10:00 PB</strong> (均速 6'09"~6'10")</div>
-            <div class="race-countdown" id="countdown-race3">計算中...</div>
-          </div>
-          <div class="race-tagline">【A 級巔峰大戰】專項提速・衝刺個人歷史最佳！</div>
-        </div>
-      </div>
+  <!-- Top Runner Switcher Bar -->
+  <div class="container" style="padding-top: 14px;">
+    <div class="runner-switcher-wrap">
+      <button id="switch-btn-tj" class="runner-switch-btn runner-tj active" onclick="switchRunner('tj')">
+        <span>🏃‍♂️ TJ (跑季三部曲)</span>
+        <span class="runner-tag-badge">華航 ➔ 台北 ➔ ASICS</span>
+      </button>
+      <button id="switch-btn-wife" class="runner-switch-btn runner-wife" onclick="switchRunner('wife')">
+        <span>🏃‍♀️ 老婆專屬 (台北馬 2:30)</span>
+        <span class="runner-tag-badge">14週甜蜜完賽</span>
+      </button>
     </div>
-  </header>
+  </div>
 
-  <!-- Important Alerts Section -->
-  <section class="container section-alert">
-    <!-- Next Step Strava Sync Preview Banner -->
-    <div class="alert-box strava-sync">
-      <div class="alert-header">
-        <span style="font-size: 1.2rem;">⚡</span>
-        <h3>【下一步系統連動規劃：Strava 實時跑步活動同步】</h3>
-        <span class="badge-tag" style="background: rgba(252, 76, 2, 0.25); color: #ff8b57; border: 1px solid rgba(252, 76, 2, 0.4);">
-          Next Phase Preview
-        </span>
-      </div>
-      <div class="alert-content">
-        <p>
-          本站架構已預留 Strava API 連線端點！下一步將支援<strong>「授權 Strava 帳號自動同步」</strong>：當你使用 Garmin / Apple Watch 跑完上傳 Strava 後，系統會自動辨識當週里程與配速，為你在線上課表<strong>即時打勾完成</strong>，並分析實際配速與心率區間！
+  <!-- ========================================================================
+       VIEW 1: TJ's Macrocycle View (Default)
+       ======================================================================== -->
+  <div id="view-tj">
+    <!-- Header / Hero Section -->
+    <header class="hero">
+      <div class="hero-overlay"></div>
+      <div class="container hero-content">
+        <div class="hero-badge-wrap">
+          <span class="hero-badge">🏃‍♂️ TJ 專屬跑季課表</span>
+          <span class="hero-badge blue">⚡ 每週 3 練高質量課表</span>
+        </div>
+        <h1>半馬跑季三部曲訓練計劃</h1>
+        <p class="hero-subtitle">
+          華航馬 (2:15~2:20 穩健打底) ➔ 台北馬 (攜手完賽 21K 低心率有氧) ➔ ASICS 馬 (直攻 2:10 PB 巔峰)
         </p>
-      </div>
-    </div>
 
-    <!-- 3-Days Principle Banner -->
-    <div class="alert-box info" style="margin-top: 10px;">
-      <div class="alert-header">
-        <span style="font-size: 1.1rem;">💡</span>
-        <h3>【每週 3 練核心哲學：高質量、不跑垃圾里程】</h3>
-      </div>
-      <div class="alert-content">
-        <p>
-          • <strong>Day 1 素質日</strong>（門檻 T 跑 / 節奏跑）：強化引擎與乳酸清除能力。<br>
-          • <strong>Day 2 輕鬆日</strong>（E 輕鬆跑）：促進循環，排解疲勞，累積微血管密度。<br>
-          • <strong>Day 3 長跑日</strong>（週末 LSD）：鍛鍊下肢肌腱剛性、燃脂效率與補給實戰。<br>
-          • 其餘 4 天充分休息放鬆，完全兼顧工作、家庭與充足的修復時間！
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Sticky Navigation Tabs -->
-  <nav class="sticky-nav">
-    <div class="container nav-container">
-      <button class="nav-btn active" data-tab="overview">🗺️ 賽季戰略總覽</button>
-      <button class="nav-btn" data-tab="stage1">🛫 階段一: 華航 (7週)</button>
-      <button class="nav-btn" data-tab="stage2">🧑‍🤝‍🧑 階段二: 台北馬 (7週)</button>
-      <button class="nav-btn" data-tab="stage3">🚀 階段三: ASICS (9週)</button>
-      <button class="nav-btn" data-tab="pacing">⏱️ 配速與通關表</button>
-      <button class="nav-btn" data-tab="nutrition">🍌 補給裝備寶典</button>
-    </div>
-  </nav>
-
-  <!-- Main Content Tabs -->
-  <main class="container main-content">
-
-    <!-- TAB 1: 賽季戰略總覽 (Overview) -->
-    <div id="tab-overview" class="tab-pane active">
-      <div class="section-header">
-        <h2>🗺️ 跑季宏觀戰略與三階段節奏</h2>
-        <p>掌握由淺入深、由穩健到巔峰的 23 週進階路徑</p>
-      </div>
-
-      <!-- Strategy Cards Grid -->
-      <div class="strategy-grid">
-        <div class="strategy-card" style="border-left: 4px solid var(--primary);">
-          <div class="strategy-card-header">
-            <span class="strategy-icon">🛫</span>
-            <div class="strategy-title">第一階段：華航馬拉松（7 週）</div>
-          </div>
-          <div class="strategy-body">
-            <p><strong>時間：</strong>2026/09/12 ~ 2026/10/31</p>
-            <p><strong>核心任務：</strong>奠定 2:15~2:20 (均速 6'30\") 的巡航體能。長跑從 12K 漸進推進至 16K，測試能量膠與半馬配速自律性。</p>
-            <div class="strategy-keypoint">
-              🎯 <strong>戰略定位：</strong>以賽代訓，不把身體榨乾，順暢完賽收穫信心！
+        <!-- Race Countdowns Grid -->
+        <div class="race-countdown-grid">
+          <!-- Race 1: 華航 -->
+          <div class="race-card race-1">
+            <div class="race-card-top">
+              <div class="race-title">✈️ 華航馬拉松</div>
+              <div class="race-date">2026/10/31 (六)</div>
             </div>
-          </div>
-        </div>
-
-        <div class="strategy-card" style="border-left: 4px solid #ec4899;">
-          <div class="strategy-card-header">
-            <span class="strategy-icon">🧑‍🤝‍🧑</span>
-            <div class="strategy-title">第二階段：台北馬拉松（7 週）</div>
-          </div>
-          <div class="strategy-body">
-            <p><strong>時間：</strong>2026/11/01 ~ 2026/12/20</p>
-            <p><strong>核心任務：</strong>華航賽後徹底排乳酸修復。轉換為最暖私人配速員 (Pacer)，陪伴老婆跑週末長跑 (10~14K) 並攜手完賽。</p>
-            <div class="strategy-keypoint">
-              🎯 <strong>戰略定位：</strong>一堂頂級的 21K 低心率有氧課！賽後零傷痛，體能底層更扎實！
+            <div class="race-meta-row">
+              <div class="race-target">目標：<strong>2:15 ~ 2:20</strong> (均速 6'24"~6'38")</div>
+              <div class="race-countdown" id="countdown-race1">計算中...</div>
             </div>
+            <div class="race-tagline">【B 級測驗賽】跑季開門哨・檢驗有氧與配速紀律</div>
           </div>
-        </div>
 
-        <div class="strategy-card" style="border-left: 4px solid var(--purple);">
-          <div class="strategy-card-header">
-            <span class="strategy-icon">🚀</span>
-            <div class="strategy-title">第三階段：ASICS 馬拉松（9 週）</div>
-          </div>
-          <div class="strategy-body">
-            <p><strong>時間：</strong>2026/12/21 ~ 2027/02/21</p>
-            <p><strong>核心任務：</strong>直攻 2:10:00 (均速 6'10\")！強化 T 門檻跑 (5'50\") 與 18K 高峰長跑，克服過年聚餐防怠惰，全力刷新個人紀錄！</p>
-            <div class="strategy-keypoint">
-              🎯 <strong>戰略定位：</strong>年度最大考！狀態調整至最高峰，破個人 PB！
+          <!-- Race 2: 台北馬 -->
+          <div class="race-card race-2">
+            <div class="race-card-top">
+              <div class="race-title">🏅 台北馬拉松</div>
+              <div class="race-date">2026/12/20 (日)</div>
             </div>
+            <div class="race-meta-row">
+              <div class="race-target">目標：<strong>夫妻攜手完賽</strong> (Z2 歡樂巡航)</div>
+              <div class="race-countdown" id="countdown-race2">計算中...</div>
+            </div>
+            <div class="race-tagline">【甜蜜配速員】頂級氛圍・累積 21K 低心率耐力</div>
+          </div>
+
+          <!-- Race 3: ASICS -->
+          <div class="race-card race-3">
+            <div class="race-card-top">
+              <div class="race-title">👟 ASICS 馬拉松</div>
+              <div class="race-date">2027/02/21 (日)</div>
+            </div>
+            <div class="race-meta-row">
+              <div class="race-target">目標：<strong>2:10:00 PB</strong> (均速 6'09"~6'10")</div>
+              <div class="race-countdown" id="countdown-race3">計算中...</div>
+            </div>
+            <div class="race-tagline">【A 級巔峰大戰】專項提速・衝刺個人歷史最佳！</div>
           </div>
         </div>
       </div>
+    </header>
 
-      <!-- Weekly 3 Sessions Architecture Card -->
-      <div class="stage-progress-card" style="margin-top: 10px;">
-        <div class="progress-title" style="margin-bottom: 12px;">
-          <span>📋 每週 3 練行程排定建議（彈性高、不卡死）</span>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
-          <div style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px; border-left: 3px solid var(--amber);">
-            <div style="font-weight: 700; color: #fbbf24; margin-bottom: 4px;">週二或週三【素質日】</div>
-            <div style="font-size: 0.82rem; color: var(--text-secondary);">
-              門檻跑 (T) 或節奏跑。刺激乳酸門檻，讓未來的賽事配速變輕鬆。
-            </div>
-          </div>
-          <div style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent);">
-            <div style="font-weight: 700; color: #34d399; margin-bottom: 4px;">週四或週五【輕鬆日】</div>
-            <div style="font-size: 0.82rem; color: var(--text-secondary);">
-              E 有氧慢跑 (5-7km)。能開口聊天的輕鬆速度，促進血液回流與排酸。
-            </div>
-          </div>
-          <div style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px; border-left: 3px solid var(--primary);">
-            <div style="font-weight: 700; color: #ff8b57; margin-bottom: 4px;">週六或週日【長跑日】</div>
-            <div style="font-size: 0.82rem; color: var(--text-secondary);">
-              LSD 耐力長跑 (10-18km)。訓練身體脂肪代謝、肌腱抗疲勞與補水補膠。
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 2: 第一階段 華航馬拉松 (Stage 1) -->
-    <div id="tab-stage1" class="tab-pane">
-      <div class="section-header">
-        <h2>🛫 第一階段：華航馬拉松（共 7 週課表）</h2>
-        <p>目標：2:15 ~ 2:20｜均速 6'24"~6'38"/km｜點擊週次展開課表，跑完可直接打勾紀錄</p>
-      </div>
-      <div id="stage1-container">
-        <!-- Populated dynamically by app.js -->
-      </div>
-    </div>
-
-    <!-- TAB 3: 第二階段 台北馬拉松 (Stage 2) -->
-    <div id="tab-stage2" class="tab-pane">
-      <div class="section-header">
-        <h2>🧑‍🤝‍🧑 第二階段：台北馬拉松（共 7 週課表）</h2>
-        <p>目標：夫妻攜手完賽｜頂級賽事氛圍｜21K 低心率有氧巡航打底</p>
-      </div>
-
-      <!-- Best Husband Pacer Tips Card -->
-      <div class="alert-box" style="margin-bottom: 20px; border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+    <!-- Important Alerts Section -->
+    <section class="container section-alert">
+      <!-- Strava Sync Preview Banner -->
+      <div class="alert-box strava-sync">
         <div class="alert-header">
-          <span style="font-size: 1.2rem;">💑</span>
-          <h3 style="color: #f472b6;">【好老公稱職配速員 (Pacer) 三大教戰錦囊】</h3>
+          <span style="font-size: 1.2rem;">⚡</span>
+          <h3>【下一步系統連動規劃：Strava 實時跑步活動同步】</h3>
+          <span class="badge-tag" style="background: rgba(252, 76, 2, 0.25); color: #ff8b57; border: 1px solid rgba(252, 76, 2, 0.4);">
+            Next Phase Preview
+          </span>
         </div>
         <div class="alert-content">
-          <p>1. <strong>提前 200 公尺預告水站：</strong>提醒老婆準備靠側邊，並主動幫忙拿紙杯遞水，避免人潮推擠打亂節奏。</p>
-          <p>2. <strong>逆風段與上橋主動破風：</strong>台北馬進入河濱健康路水門與麥帥二橋時常有逆風，跑在老婆側前方幫忙擋風省力 10%。</p>
-          <p>3. <strong>15K 後的高情緒價值：</strong>當老婆體力進入撞牆期，多給予正面肯定，提醒「放鬆肩膀、手臂自然輕甩」，順利完賽就是最大勝利！</p>
+          <p>
+            本站架構已預留 Strava API 端點！下一步將支援<strong>「授權 Strava 帳號自動同步」</strong>：跑完上傳 Strava 後，系統會自動辨識當週里程與配速，為你在線上課表<strong>即時打勾完成</strong>，並分析實際配速與心率區間！（目前暫不需實作，先讓你掌握未來藍圖）
+          </p>
         </div>
       </div>
 
-      <div id="stage2-container">
-        <!-- Populated dynamically by app.js -->
-      </div>
-    </div>
-
-    <!-- TAB 4: 第三階段 ASICS 馬拉松 (Stage 3) -->
-    <div id="tab-stage3" class="tab-pane">
-      <div class="section-header">
-        <h2>🚀 第三階段：ASICS 馬拉松（共 9 週課表）</h2>
-        <p>目標：2:10:00 (個人 PB)｜均速 6'09"~6'10"/km｜速耐力大升級</p>
-      </div>
-
-      <div class="alert-box" style="margin-bottom: 20px; border-left-color: var(--purple); background: rgba(139, 92, 246, 0.08);">
+      <!-- 3-Days Principle Banner -->
+      <div class="alert-box info" style="margin-top: 10px;">
         <div class="alert-header">
-          <span style="font-size: 1.2rem;">🧨</span>
-          <h3 style="color: #c084fc;">【春節過年防怠惰要訣（W20 週）】</h3>
+          <span style="font-size: 1.1rem;">💡</span>
+          <h3>【每週 3 練核心哲學：高質量、不跑垃圾里程】</h3>
         </div>
         <div class="alert-content">
-          <p>過年大魚大肉不用焦慮！只要維持「每週 3 次動態維持跑」，在大餐前或隔天早上慢跑 30~45 分鐘，維持心肺敏銳與神經興奮度，初五收假後即可順利接上 2:10 高峰期！</p>
+          <p>
+            • <strong>Day 1 素質日</strong>（門檻 T 跑 / 節奏跑）：強化引擎與乳酸清除能力。<br>
+            • <strong>Day 2 輕鬆日</strong>（E 輕鬆跑）：促進循環，排解疲勞，累積微血管密度。<br>
+            • <strong>Day 3 長跑日</strong>（週末 LSD）：鍛鍊下肢肌腱剛性、燃脂效率與補給實戰。<br>
+            • 其餘 4 天充分休息放鬆，兼顧工作、家庭與修復！
+          </p>
         </div>
       </div>
+    </section>
 
-      <div id="stage3-container">
-        <!-- Populated dynamically by app.js -->
+    <!-- Sticky Navigation Tabs -->
+    <nav class="sticky-nav">
+      <div class="container nav-container">
+        <button class="nav-btn active" data-tab="overview">🗺️ 賽季戰略總覽</button>
+        <button class="nav-btn" data-tab="stage1">🛫 階段一: 華航 (7週)</button>
+        <button class="nav-btn" data-tab="stage2">🧑‍🤝‍🧑 階段二: 台北馬 (7週)</button>
+        <button class="nav-btn" data-tab="stage3">🚀 階段三: ASICS (9週)</button>
+        <button class="nav-btn" data-tab="pacing">⏱️ 配速與通關表</button>
+        <button class="nav-btn" data-tab="nutrition">🍌 補給裝備寶典</button>
       </div>
-    </div>
+    </nav>
 
-    <!-- TAB 5: 配速與通關換算表 (Pacing) -->
-    <div id="tab-pacing" class="tab-pane">
-      <div class="section-header">
-        <h2>⏱️ 賽事配速與里程通關檢查點換算表</h2>
-        <p>精確掌握每 5 公里通過時間，比賽時看手錶心裡有數不慌亂</p>
-      </div>
+    <!-- Main Content Tabs for TJ -->
+    <main class="container main-content">
 
-      <div class="custom-table-wrap">
-        <table class="custom-table">
-          <thead>
-            <tr>
-              <th>賽事與目標</th>
-              <th>目標均速</th>
-              <th>5 km</th>
-              <th>10 km</th>
-              <th>15 km</th>
-              <th>20 km</th>
-              <th>21.0975 km</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>✈️ 華航 (2:15)</strong></td>
-              <td><span class="badge-tag" style="background: rgba(252,76,2,0.2); color: #ff8b57;">6'24\" /km</span></td>
-              <td>32:00</td>
-              <td>1:04:00</td>
-              <td>1:36:00</td>
-              <td>2:08:00</td>
-              <td><strong style="color:#fff;">2:15:00</strong></td>
-            </tr>
-            <tr>
-              <td><strong>✈️ 華航 (2:20)</strong></td>
-              <td><span class="badge-tag" style="background: rgba(252,76,2,0.15); color: #ff8b57;">6'38\" /km</span></td>
-              <td>33:10</td>
-              <td>1:06:20</td>
-              <td>1:39:30</td>
-              <td>2:12:40</td>
-              <td><strong style="color:#fff;">2:20:00</strong></td>
-            </tr>
-            <tr>
-              <td><strong>🏅 台北馬 (陪跑)</strong></td>
-              <td><span class="badge-tag" style="background: rgba(236,72,153,0.2); color: #f472b6;">7'15\"~7'45\"</span></td>
-              <td>36:15~38:45</td>
-              <td>1:12:30~1:17:30</td>
-              <td>1:48:45~1:56:15</td>
-              <td>2:25:00~2:35:00</td>
-              <td><strong style="color:#fff;">約 2:33 ~ 2:44</strong></td>
-            </tr>
-            <tr>
-              <td><strong>👟 ASICS (2:10 PB)</strong></td>
-              <td><span class="badge-tag" style="background: rgba(139,92,246,0.25); color: #c084fc;">6'09\"~6'10\"</span></td>
-              <td>30:50</td>
-              <td>1:01:40</td>
-              <td>1:32:30</td>
-              <td>2:03:20</td>
-              <td><strong style="color:#34d399;">2:10:00 (PB)</strong></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- TAB 1: 賽季戰略總覽 (Overview) -->
+      <div id="tab-overview" class="tab-pane active">
+        <div class="section-header">
+          <h2>🗺️ 跑季宏觀戰略與三階段節奏</h2>
+          <p>掌握由淺入深、由穩健到巔峰的 23 週進階路徑</p>
+        </div>
 
-      <!-- Training Pace Zones Reference -->
-      <div class="section-header" style="margin-top: 30px;">
-        <h2>🎯 訓練配速區間參考指南</h2>
-      </div>
-
-      <div class="custom-table-wrap">
-        <table class="custom-table">
-          <thead>
-            <tr>
-              <th>區間名稱</th>
-              <th>代表配速</th>
-              <th>心率區間</th>
-              <th>主要效益</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>E (Easy 輕鬆跑)</strong></td>
-              <td>6'50\" ~ 7'30\"</td>
-              <td>Z2 (125-142 bpm)</td>
-              <td>建立微血管密度、促進脂肪燃燒、排解乳酸</td>
-            </tr>
-            <tr>
-              <td><strong>M / HM (賽事目標)</strong></td>
-              <td>6'10\" ~ 6'35\"</td>
-              <td>Z3 (142-158 bpm)</td>
-              <td>適應比賽均速、練習跑步經濟性與大腿抗疲勞</td>
-            </tr>
-            <tr>
-              <td><strong>T (Threshold 門檻跑)</strong></td>
-              <td>5'50\" ~ 6'10\"</td>
-              <td>Z4 (158-170 bpm)</td>
-              <td>刺激乳酸清除能力、拉抬臨界速度，讓 6'10\" 變從容</td>
-            </tr>
-            <tr>
-              <td><strong>I (Interval 間歇/開腿)</strong></td>
-              <td>5'25\" ~ 5'40\"</td>
-              <td>Z5 (170+ bpm)</td>
-              <td>短距離提升最大攝氧量 (VO2max) 與步頻靈敏度</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- TAB 6: 補給裝備寶典 (Nutrition & Gear) -->
-    <div id="tab-nutrition" class="tab-pane">
-      <div class="section-header">
-        <h2>🍌 半馬補給、裝備與減量黃金守則</h2>
-        <p>跑半馬不只靠雙腿，科學補給與裝備是穩定完賽的另一半功臣</p>
-      </div>
-
-      <div class="strategy-grid">
-        <!-- Nutrition Plan -->
-        <div class="strategy-card">
-          <div class="strategy-card-header">
-            <span class="strategy-icon">⚡</span>
-            <div class="strategy-title">半馬能量膠與補水時程表</div>
+        <!-- Strategy Cards Grid -->
+        <div class="strategy-grid">
+          <div class="strategy-card" style="border-left: 4px solid var(--primary);">
+            <div class="strategy-card-header">
+              <span class="strategy-icon">🛫</span>
+              <div class="strategy-title">第一階段：華航馬拉松（7 週）</div>
+            </div>
+            <div class="strategy-body">
+              <p><strong>時間：</strong>2026/09/12 ~ 2026/10/31</p>
+              <p><strong>核心任務：</strong>奠定 2:15~2:20 (均速 6'30") 的巡航體能。長跑從 12K 漸進推進至 16K，測試能量膠與半馬配速自律性。</p>
+              <div class="strategy-keypoint">
+                🎯 <strong>戰略定位：</strong>以賽代訓，不把身體榨乾，順暢完賽收穫信心！
+              </div>
+            </div>
           </div>
-          <div class="strategy-body">
-            <p>• <strong>賽前 20 分鐘：</strong>吞下第 1 包能量膠 ＋ 喝 150ml 水或運動飲料，讓血糖在起跑時處於飽和狀態。</p>
-            <p>• <strong>第 7 ~ 8 公里 (約 45 分鐘)：</strong>吞第 2 包能量膠（建議在進水站前 100m 吃，進站順便喝水漱口）。</p>
-            <p>• <strong>第 14 ~ 15 公里 (約 90 分鐘)：</strong>吞第 3 包能量膠（補充後半程大腦中樞神經所需的葡萄糖，防止掉速）。</p>
-            <p>• <strong>水站原則：</strong>逢站必進，每次抿 1~2 口水潤喉即可，千萬不要大口灌水造成胃部晃動脹氣。</p>
+
+          <div class="strategy-card" style="border-left: 4px solid #ec4899;">
+            <div class="strategy-card-header">
+              <span class="strategy-icon">🧑‍🤝‍🧑</span>
+              <div class="strategy-title">第二階段：台北馬拉松（7 週）</div>
+            </div>
+            <div class="strategy-body">
+              <p><strong>時間：</strong>2026/11/01 ~ 2026/12/20</p>
+              <p><strong>核心任務：</strong>華航賽後徹底排乳酸修復。轉換為最暖私人配速員 (Pacer)，陪伴老婆跑週末長跑 (10~14K) 並攜手完賽。</p>
+              <div class="strategy-keypoint">
+                🎯 <strong>戰略定位：</strong>一堂頂級的 21K 低心率有氧課！賽後零傷痛，體能底層更扎實！
+              </div>
+            </div>
+          </div>
+
+          <div class="strategy-card" style="border-left: 4px solid var(--purple);">
+            <div class="strategy-card-header">
+              <span class="strategy-icon">🚀</span>
+              <div class="strategy-title">第三階段：ASICS 馬拉松（9 週）</div>
+            </div>
+            <div class="strategy-body">
+              <p><strong>時間：</strong>2026/12/21 ~ 2027/02/21</p>
+              <p><strong>核心任務：</strong>直攻 2:10:00 (均速 6'10")！強化 T 門檻跑 (5'50") 與 18K 高峰長跑，克服過年聚餐防怠惰，全力刷新個人紀錄！</p>
+              <div class="strategy-keypoint">
+                🎯 <strong>戰略定位：</strong>年度最大考！狀態調整至最高峰，破個人 PB！
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Gear Checklist -->
-        <div class="strategy-card">
-          <div class="strategy-card-header">
-            <span class="strategy-icon">👟</span>
-            <div class="strategy-title">賽前裝備與防摩擦清單</div>
+        <!-- Weekly 3 Sessions Architecture Card -->
+        <div class="stage-progress-card" style="margin-top: 10px;">
+          <div class="progress-title" style="margin-bottom: 12px;">
+            <span>📋 每週 3 練行程排定建議（彈性高、不卡死）</span>
           </div>
-          <div class="strategy-body">
-            <p>• <strong>跑鞋：</strong>使用已經磨合至少 50 公里以上的熟悉跑鞋，賽日<strong>絕對不穿全新鞋</strong>！</p>
-            <p>• <strong>防磨保護：</strong>胸前乳頭貼（防汗水摩擦出血）、胯下與大腿內側塗凡士林或防磨膏。</p>
-            <p>• <strong>雨備保暖（台北馬必備）：</strong>超商輕便雨衣一件（起跑前保暖防風，起跑後丟入大會回收箱）。</p>
-            <p>• <strong>號碼布與晶片：</strong>賽前一晚先別在跑衣上，確保鞋帶晶片綁牢。</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+            <div style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px; border-left: 3px solid var(--amber);">
+              <div style="font-weight: 700; color: #fbbf24; margin-bottom: 4px;">週二或週三【素質日】</div>
+              <div style="font-size: 0.82rem; color: var(--text-secondary);">
+                門檻跑 (T) 或節奏跑。刺激乳酸門檻，讓未來的賽事配速變輕鬆。
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent);">
+              <div style="font-weight: 700; color: #34d399; margin-bottom: 4px;">週四或週五【輕鬆日】</div>
+              <div style="font-size: 0.82rem; color: var(--text-secondary);">
+                E 有氧慢跑 (5-7km)。能開口聊天的輕鬆速度，促進血液回流與排酸。
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px; border-left: 3px solid var(--primary);">
+              <div style="font-weight: 700; color: #ff8b57; margin-bottom: 4px;">週六或週日【長跑日】</div>
+              <div style="font-size: 0.82rem; color: var(--text-secondary);">
+                LSD 耐力長跑 (10-18km)。訓練身體脂肪代謝、肌腱抗疲勞與補水補膠。
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-  </main>
+      <!-- TAB 2: 第一階段 華航 (Stage 1) -->
+      <div id="tab-stage1" class="tab-pane">
+        <div class="section-header">
+          <h2>🛫 第一階段：華航馬拉松（共 7 週課表）</h2>
+          <p>目標：2:15 ~ 2:20｜均速 6'24"~6'38"/km｜點擊週次展開，跑完直接打勾紀錄</p>
+        </div>
+        <div id="stage1-container"></div>
+      </div>
+
+      <!-- TAB 3: 第二階段 台北馬 (Stage 2) -->
+      <div id="tab-stage2" class="tab-pane">
+        <div class="section-header">
+          <h2>🧑‍🤝‍🧑 第二階段：台北馬拉松（共 7 週課表）</h2>
+          <p>目標：夫妻攜手完賽｜頂級賽事氛圍｜21K 低心率有氧巡航打底</p>
+        </div>
+
+        <div class="alert-box" style="margin-bottom: 20px; border-left-color: #ec4899; background: rgba(236, 72, 153, 0.08);">
+          <div class="alert-header">
+            <span style="font-size: 1.2rem;">💑</span>
+            <h3 style="color: #f472b6;">【好老公稱職配速員 (Pacer) 三大教戰錦囊】</h3>
+          </div>
+          <div class="alert-content">
+            <p>1. <strong>提前 200 公尺預告水站：</strong>提醒老婆準備靠側邊，並主動幫忙拿紙杯遞水，避免人潮推擠打亂節奏。</p>
+            <p>2. <strong>逆風段與上橋主動破風：</strong>台北馬進入河濱健康路水門與麥帥二橋時常有逆風，跑在老婆側前方幫忙擋風省力 10%。</p>
+            <p>3. <strong>15K 後的高情緒價值：</strong>當老婆體力進入撞牆期，多給予正面肯定，提醒「放鬆肩膀、手臂自然輕甩」，順利完賽就是最大勝利！</p>
+          </div>
+        </div>
+
+        <div id="stage2-container"></div>
+      </div>
+
+      <!-- TAB 4: 第三階段 ASICS (Stage 3) -->
+      <div id="tab-stage3" class="tab-pane">
+        <div class="section-header">
+          <h2>🚀 第三階段：ASICS 馬拉松（共 9 週課表）</h2>
+          <p>目標：2:10:00 (個人 PB)｜均速 6'09"~6'10"/km｜速耐力大升級</p>
+        </div>
+
+        <div class="alert-box" style="margin-bottom: 20px; border-left-color: var(--purple); background: rgba(139, 92, 246, 0.08);">
+          <div class="alert-header">
+            <span style="font-size: 1.2rem;">🧨</span>
+            <h3 style="color: #c084fc;">【春節過年防怠惰要訣（W20 週）】</h3>
+          </div>
+          <div class="alert-content">
+            <p>過年大魚大肉不用焦慮！只要維持「每週 3 次動態維持跑」，在大餐前或隔天早上慢跑 30~45 分鐘，維持心肺敏銳與神經興奮度，初五收假後即可順利接上 2:10 高峰期！</p>
+          </div>
+        </div>
+
+        <div id="stage3-container"></div>
+      </div>
+
+      <!-- TAB 5: 配速與通關換算表 (Pacing) -->
+      <div id="tab-pacing" class="tab-pane">
+        <div class="section-header">
+          <h2>⏱️ 賽事配速與里程通關檢查點換算表</h2>
+          <p>精確掌握每 5 公里通過時間，比賽時看手錶心裡有數不慌亂</p>
+        </div>
+
+        <div class="custom-table-wrap">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>賽事與目標</th>
+                <th>目標均速</th>
+                <th>5 km</th>
+                <th>10 km</th>
+                <th>15 km</th>
+                <th>20 km</th>
+                <th>21.0975 km</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>✈️ 華航 (2:15)</strong></td>
+                <td><span class="badge-tag" style="background: rgba(252,76,2,0.2); color: #ff8b57;">6'24" /km</span></td>
+                <td>32:00</td>
+                <td>1:04:00</td>
+                <td>1:36:00</td>
+                <td>2:08:00</td>
+                <td><strong style="color:#fff;">2:15:00</strong></td>
+              </tr>
+              <tr>
+                <td><strong>✈️ 華航 (2:20)</strong></td>
+                <td><span class="badge-tag" style="background: rgba(252,76,2,0.15); color: #ff8b57;">6'38" /km</span></td>
+                <td>33:10</td>
+                <td>1:06:20</td>
+                <td>1:39:30</td>
+                <td>2:12:40</td>
+                <td><strong style="color:#fff;">2:20:00</strong></td>
+              </tr>
+              <tr>
+                <td><strong>🏅 台北馬 (陪跑)</strong></td>
+                <td><span class="badge-tag" style="background: rgba(236,72,153,0.2); color: #f472b6;">7'15"~7'45"</span></td>
+                <td>36:15~38:45</td>
+                <td>1:12:30~1:17:30</td>
+                <td>1:48:45~1:56:15</td>
+                <td>2:25:00~2:35:00</td>
+                <td><strong style="color:#fff;">約 2:33 ~ 2:44</strong></td>
+              </tr>
+              <tr>
+                <td><strong>👟 ASICS (2:10 PB)</strong></td>
+                <td><span class="badge-tag" style="background: rgba(139,92,246,0.25); color: #c084fc;">6'09"~6'10"</span></td>
+                <td>30:50</td>
+                <td>1:01:40</td>
+                <td>1:32:30</td>
+                <td>2:03:20</td>
+                <td><strong style="color:#34d399;">2:10:00 (PB)</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-header" style="margin-top: 30px;">
+          <h2>🎯 訓練配速區間參考指南</h2>
+        </div>
+
+        <div class="custom-table-wrap">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>區間名稱</th>
+                <th>代表配速</th>
+                <th>心率區間</th>
+                <th>主要效益</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>E (Easy 輕鬆跑)</strong></td>
+                <td>6'50" ~ 7'30"</td>
+                <td>Z2 (125-142 bpm)</td>
+                <td>建立微血管密度、促進脂肪燃燒、排解乳酸</td>
+              </tr>
+              <tr>
+                <td><strong>M / HM (賽事目標)</strong></td>
+                <td>6'10" ~ 6'35"</td>
+                <td>Z3 (142-158 bpm)</td>
+                <td>適應比賽均速、練習跑步經濟性與大腿抗疲勞</td>
+              </tr>
+              <tr>
+                <td><strong>T (Threshold 門檻跑)</strong></td>
+                <td>5'50" ~ 6'10"</td>
+                <td>Z4 (158-170 bpm)</td>
+                <td>刺激乳酸清除能力、拉抬臨界速度，讓 6'10" 變從容</td>
+              </tr>
+              <tr>
+                <td><strong>I (Interval 間歇/開腿)</strong></td>
+                <td>5'25" ~ 5'40"</td>
+                <td>Z5 (170+ bpm)</td>
+                <td>短距離提升最大攝氧量 (VO2max) 與步頻靈敏度</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 6: 補給裝備寶典 (Nutrition & Gear) -->
+      <div id="tab-nutrition" class="tab-pane">
+        <div class="section-header">
+          <h2>🍌 半馬補給、裝備與減量黃金守則</h2>
+          <p>跑半馬不只靠雙腿，科學補給與裝備是穩定完賽的另一半功臣</p>
+        </div>
+
+        <div class="strategy-grid">
+          <div class="strategy-card">
+            <div class="strategy-card-header">
+              <span class="strategy-icon">⚡</span>
+              <div class="strategy-title">半馬能量膠與補水時程表</div>
+            </div>
+            <div class="strategy-body">
+              <p>• <strong>賽前 20 分鐘：</strong>吞下第 1 包能量膠 ＋ 喝 150ml 水或運動飲料，讓血糖在起跑時處於飽和狀態。</p>
+              <p>• <strong>第 7 ~ 8 公里 (約 45 分鐘)：</strong>吞第 2 包能量膠（建議在進水站前 100m 吃，進站順便喝水漱口）。</p>
+              <p>• <strong>第 14 ~ 15 公里 (約 90 分鐘)：</strong>吞第 3 包能量膠（補充後半程大腦中樞神經所需的葡萄糖，防止掉速）。</p>
+              <p>• <strong>水站原則：</strong>逢站必進，每次抿 1~2 口水潤喉即可，千萬不要大口灌水造成胃部晃動脹氣。</p>
+            </div>
+          </div>
+
+          <div class="strategy-card">
+            <div class="strategy-card-header">
+              <span class="strategy-icon">👟</span>
+              <div class="strategy-title">賽前裝備與防摩擦清單</div>
+            </div>
+            <div class="strategy-body">
+              <p>• <strong>跑鞋：</strong>使用已經磨合至少 50 公里以上的熟悉跑鞋，賽日<strong>絕對不穿全新鞋</strong>！</p>
+              <p>• <strong>防磨保護：</strong>胸前乳頭貼（防汗水摩擦出血）、胯下與大腿內側塗凡士林或防磨膏。</p>
+              <p>• <strong>雨備保暖（台北馬必備）：</strong>超商輕便雨衣一件（起跑前保暖防風，起跑後丟入大會回收箱）。</p>
+              <p>• <strong>號碼布與晶片：</strong>賽前一晚先別在跑衣上，確保鞋帶晶片綁牢。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+
+  <!-- ========================================================================
+       VIEW 2: Wife's Dedicated Training View
+       ======================================================================== -->
+  <div id="view-wife" style="display: none;">
+    <!-- Header / Hero Section for Wife -->
+    <header class="hero">
+      <div class="hero-overlay"></div>
+      <div class="container hero-content">
+        <div class="hero-badge-wrap">
+          <span class="hero-badge pink">🌸 老婆專屬・台北馬半馬挑戰</span>
+          <span class="hero-badge" style="background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.3);">
+            💑 老公全職 Pacer 護航
+          </span>
+        </div>
+        <h1>2026 台北馬拉松 2:30 完賽計劃</h1>
+        <p class="hero-subtitle">
+          目標時間 <strong>2:30:00</strong> (平均配速 7'06"/km) • 共 14 週溫柔進階課表 • 夫妻同跑幸福完賽！
+        </p>
+
+        <!-- Race Countdown Card for Wife -->
+        <div class="race-countdown-grid" style="grid-template-columns: 1fr; max-width: 500px; margin: 0 auto;">
+          <div class="race-card race-wife">
+            <div class="race-card-top">
+              <div class="race-title" style="color: #fda4af;">🏅 台北馬拉松 (Taipei Half Marathon)</div>
+              <div class="race-date">2026/12/20 (日)</div>
+            </div>
+            <div class="race-meta-row">
+              <div class="race-target">賽事目標：<strong style="color: #fff;">2:30:00 完賽</strong> (均速 7'06"/km)</div>
+              <div class="race-countdown" id="countdown-wife-race">計算中...</div>
+            </div>
+            <div class="race-tagline" style="color: #fda4af;">
+              💖 專屬教練與配速員老公隨行，全程擋風、拿水、給予滿滿情緒價值！
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Important Notice for Wife -->
+    <section class="container section-alert">
+      <div class="alert-box pink">
+        <div class="alert-header">
+          <span style="font-size: 1.2rem;">🌷</span>
+          <h3 style="color: #fda4af;">【給老婆的 2:30 完賽心法：妳只需要負責呼吸與前進】</h3>
+        </div>
+        <div class="alert-content">
+          <p>
+            • <strong>均速 7'06"/km 其實很親切：</strong>大約是稍微大步快走的輕快慢跑，不用氣喘吁吁，只要步頻穩定！<br>
+            • <strong>配速由老公來控：</strong>妳不需要一直盯著手錶算秒數，只要跟在老公身後，把體能平穩發揮即可。<br>
+            • <strong>週末長跑是約會：</strong>每週末牽手跑步累積里程，台北馬當天我們一定能笑著牽手衝過終點線！
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sticky Navigation Tabs for Wife -->
+    <nav class="sticky-nav">
+      <div class="container nav-container">
+        <button class="nav-btn active" data-tab="plan">🌸 14週完賽課表</button>
+        <button class="nav-btn" data-tab="pacing">⏱️ 2:30 配速通關表</button>
+        <button class="nav-btn" data-tab="tips">🎒 補給裝備錦囊</button>
+      </div>
+    </nav>
+
+    <!-- Main Content for Wife -->
+    <main class="container main-content">
+
+      <!-- TAB 1: 14 週完整課表 -->
+      <div id="tab-wife-plan" class="tab-pane active">
+        <div class="section-header">
+          <h2>🌸 老婆專屬：14 週進階訓練課表</h2>
+          <p>每週 3 次練習（目標配速跑 + 輕鬆舒壓跑 + 週末夫妻同跑）• 點擊展開可打勾紀錄</p>
+        </div>
+        <div id="wife-plan-container"></div>
+      </div>
+
+      <!-- TAB 2: 配速通關表 -->
+      <div id="tab-wife-pacing" class="tab-pane">
+        <div class="section-header">
+          <h2>⏱️ 台北馬 2:30:00 里程通過時間對照表</h2>
+          <p>均速 7'06" /km，每 5 公里檢查點通過時間（老公的手錶會精準掌控）</p>
+        </div>
+
+        <div class="custom-table-wrap">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>里程節點</th>
+                <th>目標配速</th>
+                <th>通過大會時間</th>
+                <th>體感重點提示</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>起跑 ➔ 5 km</strong></td>
+                <td><span class="badge-tag" style="background: rgba(244,63,94,0.2); color: #fda4af;">7'06" ~ 7'10"</span></td>
+                <td><strong>35:30</strong></td>
+                <td>熱身開跑，避免跟隨人群暴衝，平順找到雙腳節奏。</td>
+              </tr>
+              <tr>
+                <td><strong>5 km ➔ 10 km</strong></td>
+                <td><span class="badge-tag" style="background: rgba(244,63,94,0.2); color: #fda4af;">7'06"</span></td>
+                <td><strong>1:11:00</strong></td>
+                <td>定速巡航，第 7-8K 順暢吃下第 1 包能量膠配水。</td>
+              </tr>
+              <tr>
+                <td><strong>10 km ➔ 15 km</strong></td>
+                <td><span class="badge-tag" style="background: rgba(244,63,94,0.2); color: #fda4af;">7'06"</span></td>
+                <td><strong>1:46:30</strong></td>
+                <td>進入河濱段，老公主動擋風！第 14K 吃第 2 包能量膠補充大腦糖分。</td>
+              </tr>
+              <tr>
+                <td><strong>15 km ➔ 20 km</strong></td>
+                <td><span class="badge-tag" style="background: rgba(244,63,94,0.2); color: #fda4af;">7'06"</span></td>
+                <td><strong>2:22:00</strong></td>
+                <td>心理意志力考驗，專注呼吸，跟緊老公身後，倒數剩餘公里！</td>
+              </tr>
+              <tr>
+                <td><strong>終點 21.0975 km</strong></td>
+                <td><span class="badge-tag" style="background: rgba(16,185,129,0.2); color: #34d399;">衝線！</span></td>
+                <td><strong style="color: #34d399; font-size: 1.1rem;">2:30:00 完賽！</strong></td>
+                <td>台北市政府前牽手高舉雙臂！收穫半馬完賽獎牌與大毛巾！</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-header" style="margin-top: 30px;">
+          <h2>🎯 平時訓練配速參考</h2>
+        </div>
+        <div class="custom-table-wrap">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>課表類型</th>
+                <th>建議配速</th>
+                <th>體感描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>目標配速跑 (Race Pace)</strong></td>
+                <td>7'00" ~ 7'10" /km</td>
+                <td>稍微出汗、步伐俐落，能簡短說話</td>
+              </tr>
+              <tr>
+                <td><strong>輕鬆有氧慢跑 (Easy Run)</strong></td>
+                <td>7'40" ~ 8'00" /km</td>
+                <td>非常舒服，完全可以跟老公聊天笑鬧</td>
+              </tr>
+              <tr>
+                <td><strong>週末耐力長跑 (LSD)</strong></td>
+                <td>7'25" ~ 7'45" /km</td>
+                <td>平穩呼吸，享受雙腿踩踏的充實感</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: 女生補給與備賽錦囊 -->
+      <div id="tab-wife-tips" class="tab-pane">
+        <div class="section-header">
+          <h2>🎒 女生半馬備賽、補給與防磨貼心指南</h2>
+          <p>細節決定舒適度，讓妳無痛無傷享受台北馬拉松嘉年華</p>
+        </div>
+
+        <div class="strategy-grid">
+          <div class="strategy-card">
+            <div class="strategy-card-header">
+              <span class="strategy-icon">💖</span>
+              <div class="strategy-title">能量膠與水分補給守則</div>
+            </div>
+            <div class="strategy-body">
+              <p>• <strong>能量膠吃法：</strong>挑選妳喜歡的口味（推薦水蜜桃或白葡萄口味的水感能量膠，比較不甜膩不卡喉嚨）。</p>
+              <p>• <strong>補給時間點：</strong>起跑前 15 分鐘吃半包，賽道第 7 公里吃 1 包，第 14 公里吃 1 包。</p>
+              <p>• <strong>進水站由老公代勞：</strong>接近水站前 200 公尺老公會往前幫妳拿水杯，妳只要維持節奏前進，接過水杯抿兩小口潤喉即可！</p>
+            </div>
+          </div>
+
+          <div class="strategy-card">
+            <div class="strategy-card-header">
+              <span class="strategy-icon">👗</span>
+              <div class="strategy-title">防摩擦、保暖與穿搭清單</div>
+            </div>
+            <div class="strategy-body">
+              <p>• <strong>運動內衣防摩擦：</strong>下圍與腋下縫線處，賽前塗抹適量凡士林或運動防磨膏，防止流汗摩擦破皮。</p>
+              <p>• <strong>起跑前保暖：</strong>12 月台北清晨氣溫約 14~16 度，準備一件拋棄式輕便雨衣套在跑衣外防風，起跑發熱後隨時脫掉丟入大會垃圾桶。</p>
+              <p>• <strong>頭髮與帽子：</strong>綁好高馬尾或丸子頭，戴透氣遮陽帽或運動髮帶，避免汗水流進眼睛影響視線。</p>
+              <p>• <strong>賽後保暖外套：</strong>託運行李袋一定要放一件防風保暖厚外套與乾淨毛巾，完賽過線後立刻穿上避免著涼。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
 
   <!-- Mobile Floating Action Button -->
   <div class="quick-action-bar">
@@ -421,13 +630,13 @@
   <!-- Footer -->
   <footer class="footer-bar">
     <div class="container">
-      <p>2026-2027 Half-Marathon Periodized Training Plan</p>
+      <p>2026-2027 Half-Marathon Training Plan • TJ & Wife Dual Edition</p>
       <p style="margin-top: 4px; color: var(--text-muted);">
-        離線進度自動儲存於手機瀏覽器 (LocalStorage) • 下一步支援 Strava API 活動連動
+        進度自動儲存於本機瀏覽器 (LocalStorage) • 下一步支援 Strava API 活動連動
       </p>
     </div>
   </footer>
 
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>

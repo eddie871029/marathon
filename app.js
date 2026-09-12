@@ -1,6 +1,7 @@
 // ==========================================================================
 // 2026-2027 Half-Marathon Training Plan Engine
 // Modeled after oki design system - Mobile-First Vanilla JS
+// Dual Runner Support: TJ (3-Race Macrocycle) & Wife (Taipei HM 2:30)
 // ==========================================================================
 
 const RACE_DATES = {
@@ -9,7 +10,9 @@ const RACE_DATES = {
   race3: new Date("2027-02-21T06:30:00+08:00")  // ASICS 馬拉松
 };
 
-// Complete 23-Week Training Plan Data
+// ==========================================================================
+// 1. TJ's 23-Week Training Plan Data (3 Races)
+// ==========================================================================
 const TRAINING_DATA = {
   stage1: {
     title: "🛫 第一階段：華航馬拉松備戰期",
@@ -119,7 +122,7 @@ const TRAINING_DATA = {
         days: [
           { id: "s2-w8-d1", dayName: "Day 1 (週三)", type: "easy", tag: "主動修復", title: "4 km 極慢排酸跑 / 快走", dist: "4 km", pace: "7'40\" /km", hr: "Z1 (<125 bpm)", desc: "感受雙腿肌群回血，促進代謝廢物排除。" },
           { id: "s2-w8-d2", dayName: "Day 2 (週五)", type: "easy", tag: "輕鬆有氧", title: "5 km 輕鬆慢跑", dist: "5 km", pace: "7'15\" /km", hr: "Z2 (125-138 bpm)", desc: "慢跑測試雙腿受損情況，若無痛點即可逐步回歸。" },
-          { id: "s2-w8-d3", dayName: "Day 3 (週末)", type: "easy", tag: "夫妻同跑", title: "6 km 夫妻公園輕鬆散步跑", dist: "6 km", pace: "輕鬆舒適", hr: "Z1-Z2", desc: "陪伴老婆慢跑，討論台北馬完賽策略與心理預備。" }
+          { id: "s2-w8-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "6 km 夫妻公園輕鬆散步跑", dist: "6 km", pace: "輕鬆舒適", hr: "Z1-Z2", desc: "陪伴老婆慢跑，討論台北馬完賽策略與心理預備。" }
         ]
       },
       {
@@ -131,7 +134,7 @@ const TRAINING_DATA = {
         days: [
           { id: "s2-w9-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "個人維持", title: "暖身 + 5 km 輕快節奏跑 (6'20\") + 緩和", dist: "7 km", pace: "6'20\" /km", hr: "Z3", desc: "保持自己的心肺刺激與腿部彈性。" },
           { id: "s2-w9-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆陪跑", title: "5 km 陪伴輕鬆跑", dist: "5 km", pace: "老婆配速", hr: "Z2", desc: "練習兩人並排跑步默契與穩定步頻。" },
-          { id: "s2-w9-d3", dayName: "Day 3 (週末)", type: "long", tag: "夫妻長跑", title: "10 km 夫妻週末耐力巡航", dist: "10 km", pace: "7'15\" ~ 7'45\" /km", hr: "Z2 (低心率)", desc: "給老婆信心！每 3 公里停下喝一口水，練習穩速巡航。" }
+          { id: "s2-w9-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "10 km 夫妻週末耐力巡航", dist: "10 km", pace: "7'15\" ~ 7'45\" /km", hr: "Z2 (低心率)", desc: "給老婆信心！每 3 公里停下喝一口水，練習穩速巡航。" }
         ]
       },
       {
@@ -143,7 +146,7 @@ const TRAINING_DATA = {
         days: [
           { id: "s2-w10-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "個人門檻", title: "暖身 + 5 km T 門檻跑 (6'10\") + 緩和", dist: "7 km", pace: "6'10\" /km", hr: "Z4", desc: "維持高門檻刺激，避免二月時速耐力生疏。" },
           { id: "s2-w10-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆跑", title: "6 km 輕鬆跑", dist: "6 km", pace: "7'00\" /km", hr: "Z2", desc: "流暢排汗，保持活力。" },
-          { id: "s2-w10-d3", dayName: "Day 3 (週末)", type: "long", tag: "夫妻長跑", title: "12 km 夫妻耐力長跑", dist: "12 km", pace: "7'20\" ~ 7'50\" /km", hr: "Z2", desc: "完成 12 公里，讓老婆習慣 90 分鐘以上的雙腿負重感。" }
+          { id: "s2-w10-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "12 km 夫妻耐力長跑", dist: "12 km", pace: "7'20\" ~ 7'50\" /km", hr: "Z2", desc: "完成 12 公里，讓老婆習慣 90 分鐘以上的雙腿負重感。" }
         ]
       },
       {
@@ -155,7 +158,7 @@ const TRAINING_DATA = {
         days: [
           { id: "s2-w11-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "個人節奏", title: "暖身 + 6 km 節奏跑 (6'15\") + 緩和", dist: "8 km", pace: "6'15\" /km", hr: "Z3-Z4", desc: "維持自己良好節奏感受。" },
           { id: "s2-w11-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "陪跑", title: "5 km 陪伴輕鬆跑", dist: "5 km", pace: "老婆配速", hr: "Z2", desc: "調整跑姿，提醒夫人肩膀放鬆、手臂自然擺動。" },
-          { id: "s2-w11-d3", dayName: "Day 3 (週末)", type: "long", tag: "關鍵長跑", title: "14 km 夫妻台北馬模擬長跑", dist: "14 km", pace: "7'20\" ~ 7'50\" /km", hr: "Z2", desc: "實戰模擬！隨身攜帶能量膠，第 5K、10K 模擬水站進站與補膠節奏。" }
+          { id: "s2-w11-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "14 km 夫妻台北馬模擬長跑", dist: "14 km", pace: "7'20\" ~ 7'50\" /km", hr: "Z2", desc: "實戰模擬！隨身攜帶能量膠，第 5K、10K 模擬水站進站與補膠節奏。" }
         ]
       },
       {
@@ -167,7 +170,7 @@ const TRAINING_DATA = {
         days: [
           { id: "s2-w12-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "輕快跑", title: "5 km 輕鬆輕快跑 (6'30\")", dist: "5 km", pace: "6'30\" /km", hr: "Z3", desc: "適度流汗即可。" },
           { id: "s2-w12-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "陪跑", title: "5 km 陪伴慢跑", dist: "5 km", pace: "老婆配速", hr: "Z1-Z2", desc: "放鬆雙腿。" },
-          { id: "s2-w12-d3", dayName: "Day 3 (週末)", type: "long", tag: "減量長跑", title: "10 km 夫妻輕鬆減量長跑", dist: "10 km", pace: "7'30\" /km", hr: "Z2", desc: "順暢跑完 10K，賽前兩週減量到位。" }
+          { id: "s2-w12-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "10 km 夫妻輕鬆減量長跑", dist: "10 km", pace: "7'30\" /km", hr: "Z2", desc: "順暢跑完 10K，賽前兩週減量到位。" }
         ]
       },
       {
@@ -179,7 +182,7 @@ const TRAINING_DATA = {
         days: [
           { id: "s2-w13-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "動態跑", title: "4 km 暖身慢跑", dist: "4 km", pace: "6'30\" /km", hr: "Z2", desc: "維持神經靈敏度。" },
           { id: "s2-w13-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "陪跑", title: "4 km 夫妻舒壓慢跑", dist: "4 km", pace: "輕鬆舒適", hr: "Z1", desc: "互相給予正向肯定與鼓勵。" },
-          { id: "s2-w13-d3", dayName: "Day 3 (週末)", type: "long", tag: "賽前慢動", title: "6 km 輕鬆慢跑熱身", dist: "6 km", pace: "7'30\" /km", hr: "Z1-Z2", desc: "賽前一週收心跑，檢查參賽號碼布與晶片綁定。" }
+          { id: "s2-w13-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "6 km 輕鬆慢跑熱身", dist: "6 km", pace: "7'30\" /km", hr: "Z1-Z2", desc: "賽前一週收心跑，檢查參賽號碼布與晶片綁定。" }
         ]
       },
       {
@@ -315,27 +318,212 @@ const TRAINING_DATA = {
   }
 };
 
-// LocalStorage key for progress checkboxes
-const STORAGE_KEY = "marathon_training_checked_v1";
+// ==========================================================================
+// 2. Wife's 14-Week Taipei Half Marathon Plan (Target 2:30:00)
+// ==========================================================================
+const WIFE_TRAINING_DATA = {
+  title: "🏃‍♀️ 老婆專屬：2026 台北馬拉松半馬完賽計劃",
+  targetTime: "2:30:00 (穩健達標)",
+  targetPace: "7'00\" ~ 7'10\" /km (均速 7'06\")",
+  raceDate: "2026 年 12 月 20 日 (星期日)",
+  description: "共 14 週溫柔且科學的進階課表。每週跑 3 次（1次目標配速跑 + 1次放鬆慢跑 + 週末夫妻甜蜜同跑）。由最強專屬 Pacer 老公護航破風，無痛笑著完賽！",
+  weeks: [
+    {
+      id: "wife-w1",
+      num: "W1",
+      date: "09/12 - 09/20",
+      focus: "跑感啟動與身體適應",
+      note: "第一週以建立每週動起來的習慣為主，感受跑步時肩膀放鬆，呼吸輕快。",
+      days: [
+        { id: "wife-w1-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "配速體驗", title: "暖身 500m + 4 km 目標節奏跑 (7'10\") + 緩和", dist: "5 km", pace: "7'10\" /km", hr: "Z3", desc: "體驗 7'10\" 目標巡航體感，步伐輕盈，步頻保持小步快頻。" },
+        { id: "wife-w1-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "舒壓慢跑", title: "E 區間放鬆慢跑 4 km", dist: "4 km", pace: "7'45\" /km", hr: "Z2", desc: "極度輕鬆的慢跑，排汗排毒，聽自己喜歡的音樂。" },
+        { id: "wife-w1-d3", dayName: "Day 3 (週末六/日)", type: "couple", tag: "💑 夫妻同跑", title: "8 km 週末夫妻河濱慢跑 (老公護航)", dist: "8 km", pace: "7'30\" ~ 7'45\" /km", hr: "Z2", desc: "老公陪跑！每 2 公里提醒喝一口水，順暢完成 8 公里。" }
+      ]
+    },
+    {
+      id: "wife-w2",
+      num: "W2",
+      date: "09/21 - 09/27",
+      focus: "步伐節奏定型",
+      note: "練習跑步時手肘自然向後擺動，不要聳肩。",
+      days: [
+        { id: "wife-w2-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "節奏跑", title: "暖身 + 4.5 km 目標配速跑 (7'05\") + 緩和", dist: "5.5 km", pace: "7'05\" /km", hr: "Z3", desc: "保持均勻呼吸（吸兩步、吐兩步），心率平穩。" },
+        { id: "wife-w2-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆跑", title: "E 區間有氧跑 5 km", dist: "5 km", pace: "7'45\" /km", hr: "Z2", desc: "放鬆小腿，跑完洗熱水澡放鬆。" },
+        { id: "wife-w2-d3", dayName: "Day 3 (週末六/日)", type: "couple", tag: "💑 夫妻同跑", title: "9 km 夫妻週末有氧長跑", dist: "9 km", pace: "7'30\" ~ 7'45\" /km", hr: "Z2", desc: "慢慢將距離推進到 9 公里，體會長跑後身體暢快的成就感！" }
+      ]
+    },
+    {
+      id: "wife-w3",
+      num: "W3",
+      date: "09/28 - 10/04",
+      focus: "首度突破雙位數 10K",
+      note: "本週末將完成 10 公里！這是半馬旅程的第一座重要里程碑。",
+      days: [
+        { id: "wife-w3-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "門檻試驗", title: "暖身 + 5 km 輕快跑 (7'00\") + 緩和", dist: "6 km", pace: "7'00\" /km", hr: "Z3-Z4", desc: "整整 5 公里鎖定 7 分整，感受自己心肺能力顯著進步！" },
+        { id: "wife-w3-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "舒壓慢跑", title: "4 km 輕鬆恢復跑", dist: "4 km", pace: "7'50\" /km", hr: "Z2", desc: "輕快慢跑，放鬆肌肉。" },
+        { id: "wife-w3-d3", dayName: "Day 3 (週末六/日)", type: "couple", tag: "💑 夫妻同跑", title: "🎉 10 km 夫妻同跑里程碑！", dist: "10 km", pace: "7'25\" ~ 7'40\" /km", hr: "Z2", desc: "雙位數達成！在第 5 公里停下喝運動飲料，老公幫忙記錄 10K 完跑照片！" }
+      ]
+    },
+    {
+      id: "wife-w4",
+      num: "W4",
+      date: "10/05 - 10/11",
+      focus: "10K 後的小減量與吸收",
+      note: "經過前三週的適應，本週稍微放慢，讓身體吸收訓練成效。",
+      days: [
+        { id: "wife-w4-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "輕快跑", title: "4 km 輕鬆輕快跑 (7'10\")", dist: "5 km", pace: "7'10\" /km", hr: "Z3", desc: "保持跑感即可，不過度疲憊。" },
+        { id: "wife-w4-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "放鬆慢跑", title: "4 km 散步式慢跑", dist: "4 km", pace: "8'00\" /km", hr: "Z1-Z2", desc: "享受微風，讓大腿充分排酸。" },
+        { id: "wife-w4-d3", dayName: "Day 3 (週末六/日)", type: "couple", tag: "💑 夫妻同跑", title: "8 km 輕鬆週末巡航跑", dist: "8 km", pace: "7'35\" /km", hr: "Z2", desc: "輕鬆跑完 8K，為下週進階長跑儲備能量。" }
+      ]
+    },
+    {
+      id: "wife-w5",
+      num: "W5",
+      date: "10/12 - 10/18",
+      focus: "長跑推進至 11K",
+      note: "開始練習在跑步中吃半包能量膠或含糖補給糖。",
+      days: [
+        { id: "wife-w5-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "目標節奏", title: "暖身 + 5 km 比賽配速跑 (7'05\") + 緩和", dist: "6 km", pace: "7'05\" /km", hr: "Z3", desc: "非常穩定的 7'05\"，想像自己在台北馬賽道上的自信身姿。" },
+        { id: "wife-w5-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "基礎有氧", title: "5 km 舒適慢跑", dist: "5 km", pace: "7'45\" /km", hr: "Z2", desc: "平順節奏。" },
+        { id: "wife-w5-d3", dayName: "Day 3 (週末六/日)", type: "couple", tag: "💑 夫妻同跑", title: "11 km 夫妻耐力長跑 (補給練習)", dist: "11 km", pace: "7'30\" /km", hr: "Z2", desc: "在第 6 公里嘗試吃能量膠配溫水，測試腸胃適應度。" }
+      ]
+    },
+    {
+      id: "wife-w6",
+      num: "W6",
+      date: "10/19 - 10/25",
+      focus: "穩扎穩打 12K",
+      note: "華航馬前一週，跟隨老公的減量節奏，週末完成紮實的 12K。",
+      days: [
+        { id: "wife-w6-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "節奏跑", title: "暖身 + 5 km 節奏跑 (7'00\") + 緩和", dist: "6 km", pace: "7'00\" /km", hr: "Z3", desc: "呼吸沉穩，步伐輕彈。" },
+        { id: "wife-w6-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "舒壓慢跑", title: "4.5 km 輕鬆跑", dist: "4.5 km", pace: "7'50\" /km", hr: "Z2", desc: "保持身體輕盈。" },
+        { id: "wife-w6-d3", dayName: "Day 3 (週末六/日)", type: "couple", tag: "💑 夫妻同跑", title: "12 km 夫妻長距離耐力跑", dist: "12 km", pace: "7'30\" ~ 7'45\" /km", hr: "Z2", desc: "突破 12 公里！半馬距離已經過半，完賽掌握度大幅提升！" }
+      ]
+    },
+    {
+      id: "wife-w7",
+      num: "W7",
+      date: "10/26 - 10/31",
+      focus: "老公華航出戰週・活力維持",
+      note: "本週週末陪老公出征華航馬（或在場邊熱情加油），週間維持自己輕量慢跑。",
+      days: [
+        { id: "wife-w7-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "輕快跑", title: "4 km 目標配速跑 (7'05\")", dist: "4.5 km", pace: "7'05\" /km", hr: "Z3", desc: "短距離維持跑感。" },
+        { id: "wife-w7-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "舒壓慢跑", title: "4 km 輕鬆跑", dist: "4 km", pace: "7'50\" /km", hr: "Z2", desc: "保持關節靈活度。" },
+        { id: "wife-w7-d3", dayName: "Day 3 (週末 10/31)", type: "couple", tag: "✈️ 華航助威", title: "6 km 輕鬆晨跑 / 現場最暖應援團！", dist: "6 km", pace: "輕鬆歡樂", hr: "Z1-Z2", desc: "為老公華航馬拉松大聲加油！感受大賽熱鬧氣氛，激勵自己 12 月台北馬！" }
+      ]
+    },
+    {
+      id: "wife-w8",
+      num: "W8",
+      date: "11/02 - 11/08",
+      focus: "台北馬正式倒數 6 週・全新啟航",
+      note: "老公賽後排酸，兩人重新在河濱合體慢跑。",
+      days: [
+        { id: "wife-w8-d1", dayName: "Day 1 (週三)", type: "easy", tag: "排酸漫步", title: "4 km 輕鬆排酸跑 (與老公同行)", dist: "4 km", pace: "7'40\" /km", hr: "Z1-Z2", desc: "放慢速度，以放鬆修復為主。" },
+        { id: "wife-w8-d2", dayName: "Day 2 (週五)", type: "easy", tag: "基礎有氧", title: "5 km 舒適慢跑", dist: "5 km", pace: "7'35\" /km", hr: "Z2", desc: "順暢呼吸，神清氣爽。" },
+        { id: "wife-w8-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "10 km 夫妻同跑重聚跑", dist: "10 km", pace: "7'25\" ~ 7'40\" /km", hr: "Z2", desc: "兩人重新對齊步頻，老公全職擔當護航 Pacer！" }
+      ]
+    },
+    {
+      id: "wife-w9",
+      num: "W9",
+      date: "11/09 - 11/15",
+      focus: "推進 13K・耐力躍升",
+      note: "長跑時間約 95~100 分鐘，練習長距離心理耐受力。",
+      days: [
+        { id: "wife-w9-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "目標節奏", title: "暖身 + 6 km 目標配速跑 (7'05\") + 緩和", dist: "7 km", pace: "7'05\" /km", hr: "Z3", desc: "持續 6 公里維持 7'05\"，體會如定速巡航機般的從容感。" },
+        { id: "wife-w9-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆跑", title: "5 km 舒壓慢跑", dist: "5 km", pace: "7'45\" /km", hr: "Z2", desc: "放鬆雙肩與腰部。" },
+        { id: "wife-w9-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "13 km 夫妻長距離突破跑", dist: "13 km", pace: "7'25\" ~ 7'40\" /km", hr: "Z2", desc: "穩健跨過 13 公里！在第 7 公里吃下能量膠，大腿肌肉已具備半馬抗疲勞實力！" }
+      ]
+    },
+    {
+      id: "wife-w10",
+      num: "W10",
+      date: "11/16 - 11/22",
+      focus: "關鍵 14K・實戰補水演練",
+      note: "台北馬前第二長距離，進行模擬水站喝水動作。",
+      days: [
+        { id: "wife-w10-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "目標節奏", title: "暖身 + 6 km 穩態巡航跑 (7'00\") + 緩和", dist: "7 km", pace: "7'00\" /km", hr: "Z3", desc: "跑姿挺拔，重心微前傾。" },
+        { id: "wife-w10-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆跑", title: "5 km 輕鬆慢跑", dist: "5 km", pace: "7'45\" /km", hr: "Z2", desc: "保持下肢彈性。" },
+        { id: "wife-w10-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "14 km 夫妻台北馬全流程模擬", dist: "14 km", pace: "7'20\" ~ 7'35\" /km", hr: "Z2", desc: "老公示範前 200m 預告水站與遞水，演練不慌不忙進站！" }
+      ]
+    },
+    {
+      id: "wife-w11",
+      num: "W11",
+      date: "11/23 - 11/29",
+      focus: "全週期最高峰：15 km 大考驗！",
+      note: "整個 14 週訓練中最長的一堂課！完成 15K，台北馬 2:30 完賽十拿九穩！",
+      days: [
+        { id: "wife-w11-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "目標配速", title: "暖身 + 5 km 目標配速跑 (7'00\") + 緩和", dist: "6 km", pace: "7'00\" /km", hr: "Z3", desc: "鎖定 7'00\"，自信滿分。" },
+        { id: "wife-w11-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "修復跑", title: "4 km 輕鬆慢跑", dist: "4 km", pace: "7'50\" /km", hr: "Z2", desc: "好好休息，為週末 15K 儲存能量。" },
+        { id: "wife-w11-d3", dayName: "Day 3 (週末)", type: "couple", tag: "👑 終極長跑", title: "👑 15 km 夫妻高峰長跑 (巔峰驗收)", dist: "15 km", pace: "7'20\" ~ 7'35\" /km", hr: "Z2-Z3", desc: "達成 15 公里！吃下 2 包能量膠，恭喜妳！妳已經具備 100% 台北馬完賽實力！" }
+      ]
+    },
+    {
+      id: "wife-w12",
+      num: "W12",
+      date: "11/30 - 12/06",
+      focus: "賽前兩週減量 (Tapering)",
+      note: "跑量開始縮減 30%，好好睡覺、多吃蔬菜與蛋白質，消除疲勞。",
+      days: [
+        { id: "wife-w12-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "輕快跑", title: "4 km 輕快跑 (7'05\")", dist: "4.5 km", pace: "7'05\" /km", hr: "Z3", desc: "輕盈順暢，不出大力。" },
+        { id: "wife-w12-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "舒壓慢跑", title: "4 km 輕鬆慢跑", dist: "4 km", pace: "7'50\" /km", hr: "Z1-Z2", desc: "深呼吸，放鬆雙肩。" },
+        { id: "wife-w12-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 減量長跑", title: "10 km 夫妻輕鬆減量長跑", dist: "10 km", pace: "7'30\" /km", hr: "Z2", desc: "不再跑長，跑完後雙腿感到無比輕鬆有活力！" }
+      ]
+    },
+    {
+      id: "wife-w13",
+      num: "W13",
+      date: "12/07 - 12/13",
+      focus: "賽前一週保暖與防感冒",
+      note: "12 月中旬台北變冷，注意脖子與雙腳保暖，準備比賽當天輕便雨衣。",
+      days: [
+        { id: "wife-w13-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "配速記憶", title: "3 km 目標配速跑 (7'06\")", dist: "3.5 km", pace: "7'06\" /km", hr: "Z2-Z3", desc: "複習 2:30 的神聖節奏，出汗即可收工。" },
+        { id: "wife-w13-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "放鬆慢跑", title: "3 km 散步式慢跑", dist: "3 km", pace: "8'00\" /km", hr: "Z1", desc: "促進血液循環，讓身體蓄滿電力。" },
+        { id: "wife-w13-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 賽前熱身", title: "6 km 夫妻賽前熱身慢跑", dist: "6 km", pace: "7'40\" /km", hr: "Z1-Z2", desc: "最後一次調整跑，檢查跑鞋鞋帶與防磨膏！" }
+      ]
+    },
+    {
+      id: "wife-w14",
+      num: "W14",
+      date: "12/14 - 12/20",
+      focus: "台北馬拉松・甜蜜圓夢週！",
+      note: "目標 2:30:00 完賽！老公全職護航破風，牽手微笑衝過台北市政府終點線！",
+      days: [
+        { id: "wife-w14-d1", dayName: "Day 1 (週二 12/15)", type: "easy", tag: "輕動關節", title: "2.5 km 輕鬆散步跑", dist: "2.5 km", pace: "7'30\" /km", hr: "Z1", desc: "活動腳踝，放鬆心情。" },
+        { id: "wife-w14-d2", dayName: "Day 2 (週五 12/18)", type: "easy", tag: "牽手散步", title: "夫妻 20 分鐘公園牽手散步與伸展", dist: "2 km", pace: "散步", hr: "Rest", desc: "賽前兩晚睡飽 8 小時，每餐多吃一碗白飯（肝醣超補）！" },
+        { id: "wife-w14-d3", dayName: "Day 3 (週日 12/20)", type: "race", tag: "🏅 台北馬大賽", title: "🏅 台北馬拉松 21.0975 km (挑戰 2:30 攜手完賽！)", dist: "21.1 km", pace: "7'00\" ~ 7'10\"", hr: "Z2-Z3 歡樂幸福", desc: "夢想實現日！均速維持 7'06\"，老公在側前方擋風遞水，兩人攜手歡呼衝過終點線！" }
+      ]
+    }
+  ]
+};
 
-function getCheckedWorkouts() {
+// LocalStorage keys
+const STORAGE_KEY_TJ = "marathon_training_checked_v1";
+const STORAGE_KEY_WIFE = "wife_training_checked_v1";
+const STORAGE_KEY_RUNNER = "marathon_active_runner_v1";
+
+function getCheckedWorkouts(runner = "tj") {
+  const key = runner === "wife" ? STORAGE_KEY_WIFE : STORAGE_KEY_TJ;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : {};
   } catch (e) {
     return {};
   }
 }
 
-function setWorkoutChecked(id, isChecked) {
-  const current = getCheckedWorkouts();
+function setWorkoutChecked(id, isChecked, runner = "tj") {
+  const key = runner === "wife" ? STORAGE_KEY_WIFE : STORAGE_KEY_TJ;
+  const current = getCheckedWorkouts(runner);
   if (isChecked) {
     current[id] = true;
   } else {
     delete current[id];
   }
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+    localStorage.setItem(key, JSON.stringify(current));
   } catch (e) {}
 }
 
@@ -356,14 +544,16 @@ function updateCountdowns() {
   const el1 = document.getElementById("countdown-race1");
   const el2 = document.getElementById("countdown-race2");
   const el3 = document.getElementById("countdown-race3");
+  const elWife = document.getElementById("countdown-wife-race");
 
   if (el1) el1.innerHTML = formatDiff(RACE_DATES.race1).text;
   if (el2) el2.innerHTML = formatDiff(RACE_DATES.race2).text;
   if (el3) el3.innerHTML = formatDiff(RACE_DATES.race3).text;
+  if (elWife) elWife.innerHTML = formatDiff(RACE_DATES.race2).text;
 }
 
 // ==========================================================================
-// Render Training Weeks & Workouts
+// Render TJ's Stages
 // ==========================================================================
 function renderStage(stageKey, containerId) {
   const container = document.getElementById(containerId);
@@ -372,9 +562,8 @@ function renderStage(stageKey, containerId) {
   const stage = TRAINING_DATA[stageKey];
   if (!stage) return;
 
-  const checkedMap = getCheckedWorkouts();
+  const checkedMap = getCheckedWorkouts("tj");
 
-  // Calculate total workouts and completed count for this stage
   let totalWorkouts = 0;
   let completedWorkouts = 0;
 
@@ -407,7 +596,6 @@ function renderStage(stageKey, containerId) {
     </div>
   `;
 
-  // Render each week
   stage.weeks.forEach((week, wIndex) => {
     const isFirstWeek = (stageKey === 'stage1' && wIndex === 0);
     const expandedClass = isFirstWeek ? "expanded current-week" : "";
@@ -440,6 +628,112 @@ function renderStage(stageKey, containerId) {
               <input type="checkbox" class="day-checkbox" 
                      data-id="${day.id}" 
                      data-stage="${stageKey}"
+                     data-runner="tj"
+                     ${isChecked ? 'checked' : ''} 
+                     onchange="handleCheckChange(this)" />
+              <div class="day-info">
+                <div class="day-header-line">
+                  <span class="day-name">${day.dayName}</span>
+                  <span class="day-tag ${day.type}">${day.tag}</span>
+                </div>
+                <div class="day-title">${day.title}</div>
+                <div class="day-metrics">
+                  <span class="metric-pill">距離: <strong>${day.dist}</strong></span>
+                  <span class="metric-pill">配速: <strong>${day.pace}</strong></span>
+                  <span class="metric-pill">心率: <strong>${day.hr}</strong></span>
+                </div>
+                <div class="day-desc">${day.desc}</div>
+              </div>
+            </label>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+// ==========================================================================
+// Render Wife's 14-Week Plan
+// ==========================================================================
+function renderWifePlan() {
+  const container = document.getElementById("wife-plan-container");
+  if (!container) return;
+
+  const data = WIFE_TRAINING_DATA;
+  const checkedMap = getCheckedWorkouts("wife");
+
+  let totalWorkouts = 0;
+  let completedWorkouts = 0;
+
+  data.weeks.forEach(w => {
+    w.days.forEach(d => {
+      totalWorkouts++;
+      if (checkedMap[d.id]) completedWorkouts++;
+    });
+  });
+
+  const progressPct = totalWorkouts > 0 ? Math.round((completedWorkouts / totalWorkouts) * 100) : 0;
+
+  let html = `
+    <!-- Wife Progress Card -->
+    <div class="stage-progress-card" style="border-left: 4px solid var(--wife-primary);">
+      <div class="progress-header">
+        <div class="progress-title">
+          <span style="color: var(--wife-light);">🌸 老婆台北馬完賽進度</span>
+          <span class="badge-tag" style="background: rgba(244,63,94,0.15); color: #fda4af;">共 14 週 (42 堂課)</span>
+        </div>
+        <div class="progress-pct" id="pct-wife" style="color: var(--wife-light);">${progressPct}%</div>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="bar-wife" style="width: ${progressPct}%; background: linear-gradient(90deg, #f43f5e 0%, #ec4899 100%);"></div>
+      </div>
+      <div class="progress-summary">
+        <span id="stat-wife">已完成 ${completedWorkouts} / ${totalWorkouts} 堂訓練課表</span>
+        <span>目標時間：<strong>2:30:00</strong> (均速 7'06\"/km)</span>
+      </div>
+    </div>
+  `;
+
+  data.weeks.forEach((week, wIndex) => {
+    const isFirstWeek = (wIndex === 0);
+    const expandedClass = isFirstWeek ? "expanded current-week" : "";
+
+    html += `
+      <div class="week-card ${expandedClass}" id="card-${week.id}">
+        <div class="week-header" onclick="toggleWeek('${week.id}')">
+          <div class="week-title-wrap">
+            <span class="week-number" style="color: #fda4af;">${week.num}</span>
+            <span class="week-date">${week.date}</span>
+            <span class="week-focus-badge">${week.focus}</span>
+          </div>
+          <span class="week-arrow">▼</span>
+        </div>
+        <div class="week-body">
+          <div class="week-summary-note" style="border-left-color: var(--wife-primary);">
+            🌸 <strong>本週指南：</strong>${week.note}
+          </div>
+          <div class="days-list">
+    `;
+
+    week.days.forEach(day => {
+      const isChecked = !!checkedMap[day.id];
+      const completedClass = isChecked ? "completed" : "";
+
+      html += `
+        <div class="day-item ${completedClass}" id="item-${day.id}">
+          <div class="day-item-top">
+            <label class="day-checkbox-label">
+              <input type="checkbox" class="day-checkbox" 
+                     data-id="${day.id}" 
+                     data-runner="wife"
                      ${isChecked ? 'checked' : ''} 
                      onchange="handleCheckChange(this)" />
               <div class="day-info">
@@ -481,10 +775,11 @@ window.toggleWeek = function(weekId) {
 // Checkbox change handler
 window.handleCheckChange = function(checkbox) {
   const id = checkbox.getAttribute("data-id");
+  const runner = checkbox.getAttribute("data-runner") || "tj";
   const stageKey = checkbox.getAttribute("data-stage");
   const isChecked = checkbox.checked;
 
-  setWorkoutChecked(id, isChecked);
+  setWorkoutChecked(id, isChecked, runner);
 
   const item = document.getElementById(`item-${id}`);
   if (item) {
@@ -496,14 +791,18 @@ window.handleCheckChange = function(checkbox) {
   }
 
   // Update progress bar
-  updateStageProgress(stageKey);
+  if (runner === "wife") {
+    updateWifeProgress();
+  } else if (stageKey) {
+    updateStageProgress(stageKey);
+  }
 };
 
 function updateStageProgress(stageKey) {
   const stage = TRAINING_DATA[stageKey];
   if (!stage) return;
 
-  const checkedMap = getCheckedWorkouts();
+  const checkedMap = getCheckedWorkouts("tj");
   let total = 0;
   let completed = 0;
 
@@ -525,54 +824,131 @@ function updateStageProgress(stageKey) {
   if (statEl) statEl.innerText = `已完成 ${completed} / ${total} 堂訓練課表`;
 }
 
+function updateWifeProgress() {
+  const data = WIFE_TRAINING_DATA;
+  const checkedMap = getCheckedWorkouts("wife");
+  let total = 0;
+  let completed = 0;
+
+  data.weeks.forEach(w => {
+    w.days.forEach(d => {
+      total++;
+      if (checkedMap[d.id]) completed++;
+    });
+  });
+
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+  const pctEl = document.getElementById("pct-wife");
+  const barEl = document.getElementById("bar-wife");
+  const statEl = document.getElementById("stat-wife");
+
+  if (pctEl) pctEl.innerText = `${pct}%`;
+  if (barEl) barEl.style.width = `${pct}%`;
+  if (statEl) statEl.innerText = `已完成 ${completed} / ${total} 堂訓練課表`;
+}
+
+// ==========================================================================
+// Runner Switcher (TJ vs Wife)
+// ==========================================================================
+function switchRunner(runner) {
+  const body = document.body;
+  const tjBtn = document.getElementById("switch-btn-tj");
+  const wifeBtn = document.getElementById("switch-btn-wife");
+
+  const tjView = document.getElementById("view-tj");
+  const wifeView = document.getElementById("view-wife");
+
+  if (runner === "wife") {
+    body.classList.add("theme-wife");
+    tjBtn.classList.remove("active");
+    wifeBtn.classList.add("active");
+
+    tjView.style.display = "none";
+    wifeView.style.display = "block";
+    localStorage.setItem(STORAGE_KEY_RUNNER, "wife");
+  } else {
+    body.classList.remove("theme-wife");
+    wifeBtn.classList.remove("active");
+    tjBtn.classList.add("active");
+
+    wifeView.style.display = "none";
+    tjView.style.display = "block";
+    localStorage.setItem(STORAGE_KEY_RUNNER, "tj");
+  }
+
+  // Scroll to top of runner view
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+window.switchRunner = switchRunner;
+
 // ==========================================================================
 // Tabs Navigation
 // ==========================================================================
 function setupNavigation() {
-  const navBtns = document.querySelectorAll(".nav-btn");
-  const tabPanes = document.querySelectorAll(".tab-pane");
+  // Navigation for TJ view
+  const navBtnsTJ = document.querySelectorAll("#view-tj .nav-btn");
+  const tabPanesTJ = document.querySelectorAll("#view-tj .tab-pane");
 
-  navBtns.forEach(btn => {
+  navBtnsTJ.forEach(btn => {
     btn.addEventListener("click", () => {
       const targetTab = btn.getAttribute("data-tab");
-
-      navBtns.forEach(b => b.classList.remove("active"));
+      navBtnsTJ.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
-      tabPanes.forEach(pane => {
+      tabPanesTJ.forEach(pane => {
         pane.classList.remove("active");
         if (pane.id === `tab-${targetTab}`) {
           pane.classList.add("active");
         }
       });
-
-      // Scroll sticky nav to make active button visible
       btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    });
+  });
 
-      // Scroll page to top of main content on mobile
-      const mainContent = document.querySelector(".main-content");
-      if (mainContent && window.scrollY > 300) {
-        window.scrollTo({ top: 260, behavior: 'smooth' });
-      }
+  // Navigation for Wife view
+  const navBtnsWife = document.querySelectorAll("#view-wife .nav-btn");
+  const tabPanesWife = document.querySelectorAll("#view-wife .tab-pane");
+
+  navBtnsWife.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetTab = btn.getAttribute("data-tab");
+      navBtnsWife.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      tabPanesWife.forEach(pane => {
+        pane.classList.remove("active");
+        if (pane.id === `tab-wife-${targetTab}`) {
+          pane.classList.add("active");
+        }
+      });
+      btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     });
   });
 }
 
-// Quick jump to today/current week
+// Quick jump to current week
 window.jumpToCurrentWeek = function() {
-  // Switch to stage 1 tab
-  const stage1Btn = document.querySelector('[data-tab="stage1"]');
-  if (stage1Btn) stage1Btn.click();
+  const currentRunner = localStorage.getItem(STORAGE_KEY_RUNNER) || "tj";
 
-  setTimeout(() => {
-    const card = document.getElementById("card-w1");
+  if (currentRunner === "wife") {
+    const card = document.getElementById("card-wife-w1");
     if (card) {
-      if (!card.classList.contains("expanded")) {
-        card.classList.add("expanded");
-      }
+      if (!card.classList.contains("expanded")) card.classList.add("expanded");
       card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, 100);
+  } else {
+    const stage1Btn = document.querySelector('[data-tab="stage1"]');
+    if (stage1Btn) stage1Btn.click();
+
+    setTimeout(() => {
+      const card = document.getElementById("card-w1");
+      if (card) {
+        if (!card.classList.contains("expanded")) card.classList.add("expanded");
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  }
 };
 
 // ==========================================================================
@@ -581,13 +957,20 @@ window.jumpToCurrentWeek = function() {
 document.addEventListener("DOMContentLoaded", () => {
   // Update live countdowns
   updateCountdowns();
-  setInterval(updateCountdowns, 60000); // update every minute
+  setInterval(updateCountdowns, 60000);
 
-  // Render all 3 stages
+  // Render TJ stages
   renderStage("stage1", "stage1-container");
   renderStage("stage2", "stage2-container");
   renderStage("stage3", "stage3-container");
 
+  // Render Wife 14-week plan
+  renderWifePlan();
+
   // Setup tabs
   setupNavigation();
+
+  // Restore saved runner state
+  const savedRunner = localStorage.getItem(STORAGE_KEY_RUNNER) || "tj";
+  switchRunner(savedRunner);
 });
