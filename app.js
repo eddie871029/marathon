@@ -569,6 +569,29 @@ function updateCountdowns() {
 }
 
 // ==========================================================================
+// Workout Day Nutrition & Fueling Recommendations Helper
+// ==========================================================================
+function getWorkoutNutritionTip(type, runner = "tj") {
+  if (runner === "wife") {
+    if (type === "long" || type === "couple") {
+      return "🥗 <strong>長跑補給：</strong>前晚吃足乾淨碳水・跑前1.5h吃半份饅頭或香蕉・跑中第45分吃水感能量膠・跑後老公買高蛋白大餐！";
+    } else if (type === "quality") {
+      return "🥗 <strong>配速日補給：</strong>跑前2小時吃易消化輕食・嚴禁油炸與生冷・跑後黃金30分補充無糖豆漿";
+    } else {
+      return "🥗 <strong>輕鬆跑補給：</strong>早起喝溫開水200ml・可空腹或一口蜂蜜・跑後享用豐盛營養早餐";
+    }
+  } else {
+    if (type === "long" || type === "race") {
+      return "🥗 <strong>長跑日補給：</strong>前晚肝醣超補(白飯/義大利麵)・跑前2h饅頭花生醬・每45分吞膠配水・跑後30分高蛋白碳水3:1";
+    } else if (type === "quality") {
+      return "🥗 <strong>素質日補給：</strong>跑前2h中低纖高碳水・跑前30分能量膠半包・跑中電解質潤喉・跑後30分乳清蛋白+香蕉";
+    } else {
+      return "🥗 <strong>輕鬆日補給：</strong>可空腹慢跑促進燃脂效率・跑中僅需純水・跑後抗發炎均衡餐(優質蛋白質+好油脂)";
+    }
+  }
+}
+
+// ==========================================================================
 // Render TJ's Stages
 // ==========================================================================
 function renderStage(stageKey, containerId) {
@@ -662,6 +685,7 @@ function renderStage(stageKey, containerId) {
                   <span class="metric-pill">心率: <strong>${day.hr}</strong></span>
                 </div>
                 <div class="day-desc">${day.desc}</div>
+                <div class="day-nutrition-tip">${getWorkoutNutritionTip(day.type, 'tj')}</div>
                 ${matchedAct ? `
                   <div class="strava-matched-pill">
                     <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 6px;">
@@ -783,6 +807,7 @@ function renderWifePlan() {
                   <span class="metric-pill">心率: <strong>${day.hr}</strong></span>
                 </div>
                 <div class="day-desc">${day.desc}</div>
+                <div class="day-nutrition-tip">${getWorkoutNutritionTip(day.type, 'wife')}</div>
                 ${matchedAct ? `
                   <div class="strava-matched-pill">
                     <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 6px;">
@@ -1800,11 +1825,20 @@ function analyzeRunningActivity(act, matchedCtx, currentRunner) {
     suggestions.push("🎯 <strong>半馬突破核心：</strong>把握每週唯一的長距離課表，將 6'15\"~6'30\" 的肌肉記憶雕刻進神經系統，比賽當天身體自然會接管配速！");
   }
 
-  // Recovery Prescription
+  // Recovery & Nutrition Prescription
   const waterEst = Math.round(dist * 60);
+  let specificNutritionAdvice = "";
+  if (workoutType === "long" || dist >= 11) {
+    specificNutritionAdvice = `🥪 <strong>長跑專屬飲食回補：</strong>跑後 30-45 分鐘內飲用 400ml 巧克力牛奶或高蛋白豆漿；2 小時內進食高碳水正餐（如大碗牛肉麵、鮭魚定食、雞肉義大利麵），重啟肌醣原合成酶。`;
+  } else if (workoutType === "quality") {
+    specificNutritionAdvice = `🥪 <strong>質量日高蛋白修復：</strong>跑後立即補充「碳水：蛋白質 ＝ 3:1」（如乳清蛋白 25g + 香蕉 1 根），阻止高強度訓練後的肌肉微撕裂分解。`;
+  } else {
+    specificNutritionAdvice = `🥪 <strong>輕鬆日抗發炎正餐：</strong>攝取均衡優質蛋白質與深色蔬菜（如烤鮭魚、番茄炒蛋、深綠蔬菜），補充微量元素並降低體內氧化發炎反應。`;
+  }
+
   const recoveryTips = [
     `💧 <strong>補水處方：</strong>建議跑後 2 小時內分次補足約 <strong>${waterEst} ~ ${waterEst + 250} ml</strong> 水分與含鈉電解質飲品。`,
-    `🥪 <strong>黃金代謝窗口：</strong>跑後 30-45 分鐘內補充「碳水：蛋白質 ＝ 3:1」組合（例如：微糖豆漿 400ml + 香蕉或小地瓜），加速肌醣原回補。`,
+    specificNutritionAdvice,
     `🧘 <strong>放鬆重點：</strong>使用滾筒深度放鬆<strong>小腿腓腸肌、大腿外側髂脛束 (ITB)</strong> 與臀中肌，並踩壓網球舒緩足底筋膜各 2-3 分鐘。`
   ];
 
