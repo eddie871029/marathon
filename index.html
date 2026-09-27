@@ -97,19 +97,29 @@
 
     <!-- Important Alerts Section -->
     <section class="container section-alert">
-      <!-- Strava Sync Preview Banner -->
-      <div class="alert-box strava-sync">
-        <div class="alert-header">
-          <span style="font-size: 1.2rem;">⚡</span>
-          <h3>【下一步系統連動規劃：Strava 實時跑步活動同步】</h3>
-          <span class="badge-tag" style="background: rgba(252, 76, 2, 0.25); color: #ff8b57; border: 1px solid rgba(252, 76, 2, 0.4);">
-            Next Phase Preview
+      <!-- Strava & Apple Watch Sync Control Banner -->
+      <div class="alert-box strava-sync" id="strava-sync-banner">
+        <div class="alert-header" style="justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.25rem;">⚡</span>
+            <h3>Strava & Apple 運動紀錄即時連動</h3>
+          </div>
+          <span id="strava-status-pill" class="strava-status-pill disconnected">
+            ● 尚未連結 Strava
           </span>
         </div>
         <div class="alert-content">
-          <p>
-            本站架構已預留 Strava API 端點！下一步將支援<strong>「授權 Strava 帳號自動同步」</strong>：跑完上傳 Strava 後，系統會自動辨識當週里程與配速，為你在線上課表<strong>即時打勾完成</strong>，並分析實際配速與心率區間！（目前暫不需實作，先讓你掌握未來藍圖）
+          <p id="strava-status-desc">
+            支援 <strong>Apple Watch</strong> 與 Garmin 跑完自動同步！一鍵連線後自動抓取真實跑步數據，並為當週課表<strong>自動配對打勾</strong>。
           </p>
+          <div class="strava-sync-actions" id="strava-actions-container">
+            <button class="btn-strava btn-sm" onclick="openStravaModal()">
+              🔗 連結 Strava 帳號
+            </button>
+            <button class="btn-secondary btn-sm" onclick="openAppleWatchGuide()">
+              ⌚ Apple Watch 同步教學
+            </button>
+          </div>
         </div>
       </div>
 
@@ -632,11 +642,132 @@
     <div class="container">
       <p>2026-2027 Half-Marathon Training Plan • TJ & Wife Dual Edition</p>
       <p style="margin-top: 4px; color: var(--text-muted);">
-        進度自動儲存於本機瀏覽器 (LocalStorage) • 下一步支援 Strava API 活動連動
-      </p>
-    </div>
-  </footer>
+  <!-- ========================================================================
+       MODAL 1: Strava Connection & Apple Watch Setup Modal
+       ======================================================================== -->
+  <div id="strava-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚡</span>
+          <span>連結 Strava & Apple Watch</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeStravaModal()">&times;</button>
+      </div>
 
-  <script src="app.js?v=3"></script>
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button class="modal-tab-btn active" id="modal-tab-oauth" onclick="switchModalTab('oauth')">
+            🔗 官方 OAuth 授權 (推薦)
+          </button>
+          <button class="modal-tab-btn" id="modal-tab-token" onclick="switchModalTab('token')">
+            🔑 快捷貼上 Token
+          </button>
+          <button class="modal-tab-btn" id="modal-tab-apple" onclick="switchModalTab('apple')">
+            ⌚ Apple Watch 同步教學
+          </button>
+        </div>
+
+        <!-- Panel 1: OAuth Flow -->
+        <div id="modal-panel-oauth">
+          <p style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-secondary);">
+            輸入你在 Strava API 應用程式中取得的 Client ID 與 Client Secret，點擊授權後即可一勞永逸自動刷新同步！
+          </p>
+
+          <div class="form-group">
+            <label class="form-label">Strava Client ID</label>
+            <input type="text" id="strava-client-id-input" class="form-input" placeholder="例如: 123456" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Strava Client Secret</label>
+            <input type="password" id="strava-client-secret-input" class="form-input" placeholder="例如: 40位英數混合金鑰" />
+            <div class="form-help">
+              尚未申請？前往 <a href="https://www.strava.com/settings/api" target="_blank">Strava API 申請頁面</a>（免費 1 分鐘開通，<strong>Authorization Callback Domain</strong> 請填 <code>eddie871029.github.io</code> 或 <code>localhost</code>）。
+            </div>
+          </div>
+
+          <div style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn-secondary" onclick="closeStravaModal()">取消</button>
+            <button class="btn-strava" onclick="startStravaOAuth()">
+              🚀 前往 Strava 授權連結
+            </button>
+          </div>
+        </div>
+
+        <!-- Panel 2: Direct Token Input -->
+        <div id="modal-panel-token" style="display: none;">
+          <p style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-secondary);">
+            如果你已在終端機或開發者後台取得 Access Token 或 Refresh Token，可以直接貼上快速連通：
+          </p>
+
+          <div class="form-group">
+            <label class="form-label">Access Token 或 Refresh Token</label>
+            <input type="text" id="strava-direct-token-input" class="form-input" placeholder="貼上你的 Strava Token" />
+            <div class="form-help">
+              注意：Access Token 通常有 6 小時時效；若輸入 Refresh Token，請一併在「OAuth」標籤中提供 Client ID 與 Secret 以便自動刷新。
+            </div>
+          </div>
+
+          <div style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn-secondary" onclick="closeStravaModal()">取消</button>
+            <button class="btn-strava" onclick="saveDirectToken()">
+              💾 儲存並測試連線
+            </button>
+          </div>
+        </div>
+
+        <!-- Panel 3: Apple Watch Guide -->
+        <div id="modal-panel-apple" style="display: none;">
+          <div style="background: rgba(255,255,255,0.04); border-radius: 8px; padding: 14px; margin-bottom: 12px;">
+            <h4 style="color: #fff; margin-bottom: 8px; font-size: 0.95rem;">⌚ Apple Watch 如何 0 秒自動同步到 Strava？</h4>
+            <ol style="padding-left: 20px; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+              <li>打開 iPhone 上的 <strong>Strava App</strong>。</li>
+              <li>點擊右下角「<strong>你 (You)</strong>」➔ 右上角「<strong>⚙️ 設定</strong>」。</li>
+              <li>點選「<strong>應用程式、服務與裝置 (Applications, Services, and Devices)</strong>」。</li>
+              <li>點選「<strong>健康 (Health)</strong>」，開啟「<strong>傳送到健康</strong>」以及「<strong>從健康讀取（自動同步體能訓練）</strong>」。</li>
+              <li><strong>完成！</strong>以後每次在 Apple Watch 使用內建「體能訓練」或 Nike Run Club 跑完步，iPhone 會自動秒傳進 Strava，再透過本網頁一鍵同步即可！</li>
+            </ol>
+          </div>
+          <div style="text-align: right;">
+            <button class="btn-strava" onclick="switchModalTab('oauth')">
+              知道了，前往連結 Strava ➔
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: Recent Synced Strava Activities Modal
+       ======================================================================== -->
+  <div id="strava-activities-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🏃‍♂️</span>
+          <span>已同步的 Strava 跑步紀錄</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeActivitiesModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="strava-activities-list">
+          <p style="text-align: center; color: var(--text-muted); padding: 20px;">載入中...</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeActivitiesModal()">關閉</button>
+        <button class="btn-strava btn-sm" onclick="syncStravaActivities(true)">
+          🔄 重新抓取最新紀錄
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <script src="app.js?v=4"></script>
 </body>
 </html>

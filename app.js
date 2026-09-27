@@ -503,6 +503,22 @@ const WIFE_TRAINING_DATA = {
 const STORAGE_KEY_TJ = "marathon_training_checked_v1";
 const STORAGE_KEY_WIFE = "wife_training_checked_v1";
 const STORAGE_KEY_RUNNER = "marathon_active_runner_v1";
+const STORAGE_KEY_MATCHED = "strava_matched_activities_v1";
+
+function getMatchedMap() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_MATCHED);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function setMatchedMap(map) {
+  try {
+    localStorage.setItem(STORAGE_KEY_MATCHED, JSON.stringify(map));
+  } catch (e) {}
+}
 
 function getCheckedWorkouts(runner = "tj") {
   const key = runner === "wife" ? STORAGE_KEY_WIFE : STORAGE_KEY_TJ;
@@ -617,8 +633,11 @@ function renderStage(stageKey, containerId) {
           <div class="days-list">
     `;
 
+    const matchedMap = getMatchedMap();
+
     week.days.forEach(day => {
-      const isChecked = !!checkedMap[day.id];
+      const matchedAct = matchedMap[day.id];
+      const isChecked = !!checkedMap[day.id] || !!matchedAct;
       const completedClass = isChecked ? "completed" : "";
 
       html += `
@@ -643,6 +662,12 @@ function renderStage(stageKey, containerId) {
                   <span class="metric-pill">心率: <strong>${day.hr}</strong></span>
                 </div>
                 <div class="day-desc">${day.desc}</div>
+                ${matchedAct ? `
+                  <div class="strava-matched-pill">
+                    <span>⚡ <strong>Strava 活動連動：</strong>${matchedAct.name} (${matchedAct.distanceKm}km @ ${matchedAct.avgPace}${matchedAct.avgHR ? ', 心率 ' + matchedAct.avgHR + 'bpm' : ''})</span>
+                    <a href="https://www.strava.com/activities/${matchedAct.id}" target="_blank" onclick="event.stopPropagation()">Strava 查看 ➔</a>
+                  </div>
+                ` : ''}
               </div>
             </label>
           </div>
@@ -723,8 +748,11 @@ function renderWifePlan() {
           <div class="days-list">
     `;
 
+    const matchedMap = getMatchedMap();
+
     week.days.forEach(day => {
-      const isChecked = !!checkedMap[day.id];
+      const matchedAct = matchedMap[day.id];
+      const isChecked = !!checkedMap[day.id] || !!matchedAct;
       const completedClass = isChecked ? "completed" : "";
 
       html += `
@@ -748,6 +776,12 @@ function renderWifePlan() {
                   <span class="metric-pill">心率: <strong>${day.hr}</strong></span>
                 </div>
                 <div class="day-desc">${day.desc}</div>
+                ${matchedAct ? `
+                  <div class="strava-matched-pill">
+                    <span>⚡ <strong>Strava 活動連動：</strong>${matchedAct.name} (${matchedAct.distanceKm}km @ ${matchedAct.avgPace}${matchedAct.avgHR ? ', 心率 ' + matchedAct.avgHR + 'bpm' : ''})</span>
+                    <a href="https://www.strava.com/activities/${matchedAct.id}" target="_blank" onclick="event.stopPropagation()">Strava 查看 ➔</a>
+                  </div>
+                ` : ''}
               </div>
             </label>
           </div>
@@ -938,9 +972,6 @@ window.jumpToCurrentWeek = function() {
       card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   } else {
-    const stage1Btn = document.querySelector('[data-tab="stage1"]');
-    if (stage1Btn) stage1Btn.click();
-
     setTimeout(() => {
       const card = document.getElementById("card-w1");
       if (card) {
@@ -949,6 +980,540 @@ window.jumpToCurrentWeek = function() {
       }
     }, 100);
   }
+};
+
+// ==========================================================================
+// Toast Notification Helper
+// ==========================================================================
+function showToast(msg) {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+  const toast = document.createElement("div");
+  toast.className = "toast-notification";
+  toast.innerHTML = `✨ ${msg}`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transition = "opacity 0.4s ease";
+    setTimeout(() => toast.remove(), 400);
+  }, 4500);
+}
+window.showToast = showToast;
+
+// ==========================================================================
+// Strava API & Apple Watch Integration Module
+// ==========================================================================
+const STRAVA_STORAGE = {
+  CLIENT_ID: "strava_client_id",
+  CLIENT_SECRET: "strava_client_secret",
+  ACCESS_TOKEN: "strava_access_token",
+  REFRESH_TOKEN: "strava_refresh_token",
+  ATHLETE: "strava_athlete",
+  ACTIVITIES: "strava_cached_activities",
+  LAST_SYNC: "strava_last_sync_time"
+};
+
+// Modal Control
+window.openStravaModal = function() {
+  const modal = document.getElementById("strava-modal");
+  if (modal) modal.style.display = "flex";
+
+  const savedId = localStorage.getItem(STRAVA_STORAGE.CLIENT_ID) || "";
+  const savedSecret = localStorage.getItem(STRAVA_STORAGE.CLIENT_SECRET) || "";
+  const idInput = document.getElementById("strava-client-id-input");
+  const secretInput = document.getElementById("strava-client-secret-input");
+
+  if (idInput && savedId) idInput.value = savedId;
+  if (secretInput && savedSecret) secretInput.value = savedSecret;
+};
+
+window.closeStravaModal = function() {
+  const modal = document.getElementById("strava-modal");
+  if (modal) modal.style.display = "none";
+};
+
+window.openAppleWatchGuide = function() {
+  openStravaModal();
+  switchModalTab("apple");
+};
+
+window.switchModalTab = function(tabName) {
+  const tabs = ["oauth", "token", "apple"];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`modal-tab-${t}`);
+    const panel = document.getElementById(`modal-panel-${t}`);
+    if (btn) btn.classList.toggle("active", t === tabName);
+    if (panel) panel.style.display = t === tabName ? "block" : "none";
+  });
+};
+
+// Start OAuth Authorization
+window.startStravaOAuth = function() {
+  const idInput = document.getElementById("strava-client-id-input");
+  const secretInput = document.getElementById("strava-client-secret-input");
+
+  const clientId = idInput ? idInput.value.trim() : "";
+  const clientSecret = secretInput ? secretInput.value.trim() : "";
+
+  if (!clientId) {
+    alert("請輸入 Strava Client ID！");
+    return;
+  }
+
+  localStorage.setItem(STRAVA_STORAGE.CLIENT_ID, clientId);
+  if (clientSecret) {
+    localStorage.setItem(STRAVA_STORAGE.CLIENT_SECRET, clientSecret);
+  }
+
+  const redirectUri = window.location.origin + window.location.pathname;
+  const scope = "read,activity:read_all";
+  const authUrl = `https://www.strava.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&approval_prompt=auto`;
+
+  window.location.href = authUrl;
+};
+
+// Save Direct Token
+window.saveDirectToken = async function() {
+  const tokenInput = document.getElementById("strava-direct-token-input");
+  const token = tokenInput ? tokenInput.value.trim() : "";
+
+  if (!token) {
+    alert("請輸入有效的 Strava Access Token 或 Refresh Token！");
+    return;
+  }
+
+  localStorage.setItem(STRAVA_STORAGE.ACCESS_TOKEN, token);
+  closeStravaModal();
+  showToast("正在驗證 Strava Token 並抓取數據...");
+
+  try {
+    const athlete = await fetchStravaAthlete(token);
+    localStorage.setItem(STRAVA_STORAGE.ATHLETE, JSON.stringify(athlete));
+    await syncStravaActivities(true);
+    updateStravaUIStatus();
+  } catch (err) {
+    showToast(`Token 驗證失敗: ${err.message || '請確認權限是否包含 activity:read_all'}`);
+  }
+};
+
+// Handle OAuth Redirect Callback (?code=...)
+async function handleOAuthCallback() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get("code");
+
+  if (!code) return;
+
+  const clientId = localStorage.getItem(STRAVA_STORAGE.CLIENT_ID);
+  const clientSecret = localStorage.getItem(STRAVA_STORAGE.CLIENT_SECRET);
+
+  if (!clientId || !clientSecret) {
+    openStravaModal();
+    showToast("已檢測到 Strava 授權碼！請確認 Client ID 與 Secret 完成對接。");
+    return;
+  }
+
+  showToast("正在透過授權碼換取 Strava Access Token...");
+
+  try {
+    const res = await fetch("https://www.strava.com/oauth/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        client_id: clientId.trim(),
+        client_secret: clientSecret.trim(),
+        code: code.trim(),
+        grant_type: "authorization_code"
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    localStorage.setItem(STRAVA_STORAGE.ACCESS_TOKEN, data.access_token);
+    if (data.refresh_token) {
+      localStorage.setItem(STRAVA_STORAGE.REFRESH_TOKEN, data.refresh_token);
+    }
+    if (data.athlete) {
+      localStorage.setItem(STRAVA_STORAGE.ATHLETE, JSON.stringify(data.athlete));
+    }
+
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    showToast(`🎉 Strava 連線成功！歡迎 ${data.athlete?.firstname || '跑者'}！`);
+    await syncStravaActivities(true);
+    updateStravaUIStatus();
+  } catch (err) {
+    showToast(`Strava 授權換取 Token 失敗: ${err.message}`);
+  }
+}
+
+// Refresh Token Helper
+async function refreshStravaToken() {
+  const clientId = localStorage.getItem(STRAVA_STORAGE.CLIENT_ID);
+  const clientSecret = localStorage.getItem(STRAVA_STORAGE.CLIENT_SECRET);
+  const refreshToken = localStorage.getItem(STRAVA_STORAGE.REFRESH_TOKEN);
+
+  if (!clientId || !clientSecret || !refreshToken) return null;
+
+  try {
+    const res = await fetch("https://www.strava.com/oauth/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        client_id: clientId.trim(),
+        client_secret: clientSecret.trim(),
+        refresh_token: refreshToken.trim(),
+        grant_type: "refresh_token"
+      })
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (data.access_token) {
+      localStorage.setItem(STRAVA_STORAGE.ACCESS_TOKEN, data.access_token);
+      if (data.refresh_token) {
+        localStorage.setItem(STRAVA_STORAGE.REFRESH_TOKEN, data.refresh_token);
+      }
+      return data.access_token;
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Fetch Athlete Profile
+async function fetchStravaAthlete(token) {
+  const res = await fetch("https://www.strava.com/api/v3/athlete", {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`獲取跑者資訊失敗 (${res.status})`);
+  return await res.json();
+}
+
+// Format Pace from m/s
+function formatPace(speedMps) {
+  if (!speedMps || speedMps <= 0) return "--:--/km";
+  const secPerKm = 1000 / speedMps;
+  const min = Math.floor(secPerKm / 60);
+  const sec = Math.round(secPerKm % 60);
+  return `${min}'${String(sec).padStart(2, "0")}"/km`;
+}
+
+// Sync Activities & Smart Match
+window.syncStravaActivities = async function(isManual = false) {
+  let token = localStorage.getItem(STRAVA_STORAGE.ACCESS_TOKEN);
+  if (!token) {
+    if (isManual) openStravaModal();
+    return;
+  }
+
+  if (isManual) showToast("正在向 Strava 同步最新跑步紀錄...");
+
+  try {
+    let res = await fetch("https://www.strava.com/api/v3/athlete/activities?per_page=30", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    // If token expired, try refreshing
+    if (res.status === 401) {
+      const refreshed = await refreshStravaToken();
+      if (refreshed) {
+        token = refreshed;
+        res = await fetch("https://www.strava.com/api/v3/athlete/activities?per_page=30", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } else {
+        throw new Error("Token 已過期，請重新授權！");
+      }
+    }
+
+    if (!res.ok) throw new Error(`Strava API 請求失敗 (${res.status})`);
+
+    const rawActivities = await res.json();
+    const runs = rawActivities
+      .filter(act => act.type === "Run" || act.sport_type === "Run")
+      .map(act => ({
+        id: act.id,
+        name: act.name,
+        date: act.start_date_local ? act.start_date_local.split("T")[0] : "",
+        distanceKm: Math.round((act.distance / 1000) * 10) / 10,
+        movingTimeMin: Math.round(act.moving_time / 60),
+        avgPace: formatPace(act.average_speed),
+        avgHR: act.average_heartrate ? Math.round(act.average_heartrate) : null,
+        maxHR: act.max_heartrate ? Math.round(act.max_heartrate) : null
+      }));
+
+    localStorage.setItem(STRAVA_STORAGE.ACTIVITIES, JSON.stringify(runs));
+    localStorage.setItem(STRAVA_STORAGE.LAST_SYNC, new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+
+    // Run Smart Auto-Check Matcher
+    const matchCount = matchStravaActivitiesToWorkouts(runs);
+
+    // Refresh UI
+    updateStravaUIStatus();
+    renderStage("stage1", "stage1-container");
+    renderStage("stage2", "stage2-container");
+    renderStage("stage3", "stage3-container");
+    renderWifePlan();
+
+    if (isManual) {
+      showToast(`🎉 成功同步 Strava！獲取 ${runs.length} 筆跑步，並自動配對打勾 ${matchCount} 堂課表！`);
+    }
+  } catch (err) {
+    if (isManual) showToast(`同步失敗: ${err.message}`);
+  }
+};
+
+// Smart Auto-Check Matcher
+function matchStravaActivitiesToWorkouts(runs) {
+  const matchedMap = getMatchedMap();
+  let newMatchCount = 0;
+
+  // Helper to parse date strings "09/12 - 09/20"
+  function parseDateRange(dateStr, defaultYear = 2026) {
+    if (!dateStr || !dateStr.includes("-")) return null;
+    const parts = dateStr.split("-").map(p => p.trim());
+    if (parts.length !== 2) return null;
+
+    const [m1, d1] = parts[0].split("/").map(Number);
+    const [m2, d2] = parts[1].split("/").map(Number);
+
+    let y1 = defaultYear;
+    let y2 = defaultYear;
+    // Year rollover for Jan / Feb 2027
+    if (m1 <= 2) y1 = 2027;
+    if (m2 <= 2) y2 = 2027;
+
+    const start = new Date(y1, m1 - 1, d1, 0, 0, 0);
+    const end = new Date(y2, m2 - 1, d2, 23, 59, 59);
+    return { start, end };
+  }
+
+  // Iterate all runs
+  runs.forEach(act => {
+    if (!act.date) return;
+    const actDate = new Date(act.date + "T12:00:00");
+
+    // Check TJ's stages
+    Object.keys(TRAINING_DATA).forEach(stageKey => {
+      const stage = TRAINING_DATA[stageKey];
+      stage.weeks.forEach(week => {
+        const range = parseDateRange(week.date);
+        if (!range) return;
+
+        // Allow +/- 2 days tolerance
+        const rangeStart = new Date(range.start.getTime() - 2 * 86400000);
+        const rangeEnd = new Date(range.end.getTime() + 2 * 86400000);
+
+        if (actDate >= rangeStart && actDate <= rangeEnd) {
+          // Find matching workout day in this week
+          let targetDay = null;
+
+          if (act.distanceKm >= 9) {
+            // Long run
+            targetDay = week.days.find(d => d.type === "long" || d.type === "race" || d.type === "couple");
+          } else if (act.distanceKm >= 3.5) {
+            // Quality or Easy run
+            targetDay = week.days.find(d => (d.type === "quality" || d.type === "easy") && !matchedMap[d.id]);
+          }
+
+          if (targetDay && !matchedMap[targetDay.id]) {
+            matchedMap[targetDay.id] = {
+              id: act.id,
+              name: act.name,
+              distanceKm: act.distanceKm,
+              avgPace: act.avgPace,
+              avgHR: act.avgHR,
+              date: act.date
+            };
+            setWorkoutChecked(targetDay.id, true, "tj");
+            newMatchCount++;
+          }
+        }
+      });
+    });
+
+    // Check Wife's plan
+    WIFE_TRAINING_DATA.weeks.forEach(week => {
+      const range = parseDateRange(week.date);
+      if (!range) return;
+
+      const rangeStart = new Date(range.start.getTime() - 2 * 86400000);
+      const rangeEnd = new Date(range.end.getTime() + 2 * 86400000);
+
+      if (actDate >= rangeStart && actDate <= rangeEnd) {
+        let targetDay = null;
+        if (act.distanceKm >= 7) {
+          targetDay = week.days.find(d => d.type === "couple" || d.type === "race");
+        } else if (act.distanceKm >= 3) {
+          targetDay = week.days.find(d => (d.type === "quality" || d.type === "easy") && !matchedMap[d.id]);
+        }
+
+        if (targetDay && !matchedMap[targetDay.id]) {
+          matchedMap[targetDay.id] = {
+            id: act.id,
+            name: act.name,
+            distanceKm: act.distanceKm,
+            avgPace: act.avgPace,
+            avgHR: act.avgHR,
+            date: act.date
+          };
+          setWorkoutChecked(targetDay.id, true, "wife");
+          newMatchCount++;
+        }
+      }
+    });
+  });
+
+  setMatchedMap(matchedMap);
+  return newMatchCount;
+}
+
+// Disconnect Strava
+window.disconnectStrava = function() {
+  if (!confirm("確定要中斷與 Strava 的連線嗎？（已打勾紀錄將完整保留）")) return;
+
+  localStorage.removeItem(STRAVA_STORAGE.ACCESS_TOKEN);
+  localStorage.removeItem(STRAVA_STORAGE.REFRESH_TOKEN);
+  localStorage.removeItem(STRAVA_STORAGE.ATHLETE);
+  localStorage.removeItem(STRAVA_STORAGE.ACTIVITIES);
+  localStorage.removeItem(STRAVA_STORAGE.LAST_SYNC);
+
+  updateStravaUIStatus();
+  showToast("已成功中斷 Strava 連線。");
+};
+
+// Update UI Status Bar
+function updateStravaUIStatus() {
+  const pill = document.getElementById("strava-status-pill");
+  const desc = document.getElementById("strava-status-desc");
+  const actions = document.getElementById("strava-actions-container");
+
+  if (!pill || !desc || !actions) return;
+
+  const token = localStorage.getItem(STRAVA_STORAGE.ACCESS_TOKEN);
+  const athleteRaw = localStorage.getItem(STRAVA_STORAGE.ATHLETE);
+  const lastSync = localStorage.getItem(STRAVA_STORAGE.LAST_SYNC);
+  const activitiesRaw = localStorage.getItem(STRAVA_STORAGE.ACTIVITIES);
+
+  let athlete = null;
+  let runsCount = 0;
+
+  try {
+    if (athleteRaw) athlete = JSON.parse(athleteRaw);
+    if (activitiesRaw) runsCount = JSON.parse(activitiesRaw).length;
+  } catch (e) {}
+
+  if (token) {
+    pill.className = "strava-status-pill connected";
+    pill.innerHTML = `● 已連結 Strava (${athlete ? athlete.firstname : "已就緒"})`;
+
+    desc.innerHTML = `
+      ✅ <strong>Strava 實時連線中</strong>（支援 Apple Watch / Garmin 跑完自動同步）。
+      ${lastSync ? `最近同步時間：<strong>${lastSync}</strong>（共載入 ${runsCount} 筆跑步紀錄）` : "點擊下方按鈕即可同步最新紀錄！"}
+    `;
+
+    actions.innerHTML = `
+      <button class="btn-strava btn-sm" onclick="syncStravaActivities(true)">
+        🔄 立即同步最新活動
+      </button>
+      <button class="btn-secondary btn-sm" onclick="openActivitiesModal()">
+        📋 查看近期跑步 (${runsCount})
+      </button>
+      <button class="btn-secondary btn-sm" onclick="openAppleWatchGuide()">
+        ⌚ Apple Watch 同步設定
+      </button>
+      <button class="btn-secondary btn-sm" style="color: #fda4af;" onclick="disconnectStrava()">
+        ❌ 斷開連線
+      </button>
+    `;
+  } else {
+    pill.className = "strava-status-pill disconnected";
+    pill.innerHTML = `● 尚未連結 Strava`;
+
+    desc.innerHTML = `
+      支援 <strong>Apple Watch</strong> 與 Garmin 跑完自動同步！一鍵連線後自動抓取真實跑步數據，並為當週課表<strong>自動配對打勾</strong>。
+    `;
+
+    actions.innerHTML = `
+      <button class="btn-strava btn-sm" onclick="openStravaModal()">
+        🔗 連結 Strava 帳號
+      </button>
+      <button class="btn-secondary btn-sm" onclick="openAppleWatchGuide()">
+        ⌚ Apple Watch 同步教學
+      </button>
+    `;
+  }
+}
+
+// Activities Modal Control
+window.openActivitiesModal = function() {
+  const modal = document.getElementById("strava-activities-modal");
+  const list = document.getElementById("strava-activities-list");
+  if (!modal || !list) return;
+
+  modal.style.display = "flex";
+
+  const raw = localStorage.getItem(STRAVA_STORAGE.ACTIVITIES);
+  let runs = [];
+  try {
+    if (raw) runs = JSON.parse(raw);
+  } catch (e) {}
+
+  if (runs.length === 0) {
+    list.innerHTML = `
+      <p style="text-align: center; color: var(--text-muted); padding: 24px;">
+        目前尚無快取的跑步活動。請點擊下方「重新抓取」按鈕同步！
+      </p>
+    `;
+    return;
+  }
+
+  const matchedMap = getMatchedMap();
+  const matchedIds = new Set(Object.values(matchedMap).map(m => m.id));
+
+  let html = `<div style="display: flex; flex-direction: column; gap: 8px;">`;
+  runs.slice(0, 15).forEach(run => {
+    const isMatched = matchedIds.has(run.id);
+
+    html += `
+      <div class="strava-activity-item">
+        <div>
+          <div style="font-weight: 700; color: #fff; font-size: 0.92rem; margin-bottom: 2px;">
+            ${run.name}
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">
+            📅 ${run.date} • 距離: <strong style="color: #ff8b57;">${run.distanceKm} km</strong> • 配速: <strong>${run.avgPace}</strong>
+            ${run.avgHR ? ` • 心率: <strong>${run.avgHR} bpm</strong>` : ""}
+          </div>
+        </div>
+        <div style="text-align: right; flex-shrink: 0;">
+          ${isMatched ? `
+            <span class="badge-tag" style="background: rgba(16,185,129,0.2); color: #34d399; margin-bottom: 4px; display: inline-block;">
+              ✓ 已配對打勾
+            </span><br>
+          ` : ""}
+          <a href="https://www.strava.com/activities/${run.id}" target="_blank" style="font-size: 0.76rem; color: #38bdf8; text-decoration: underline;">
+            Strava 詳情 ➔
+          </a>
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+
+  list.innerHTML = html;
+};
+
+window.closeActivitiesModal = function() {
+  const modal = document.getElementById("strava-activities-modal");
+  if (modal) modal.style.display = "none";
 };
 
 // ==========================================================================
@@ -973,4 +1538,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Restore saved runner state
   const savedRunner = localStorage.getItem(STORAGE_KEY_RUNNER) || "tj";
   switchRunner(savedRunner);
+
+  // Initialize Strava status and check for OAuth redirect code
+  updateStravaUIStatus();
+  handleOAuthCallback();
 });
+
