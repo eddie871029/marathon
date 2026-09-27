@@ -1264,3 +1264,182 @@ body.theme-wife .btn-floating {
   margin-bottom: 0;
 }
 
+/* AI Coach Review Button */
+.btn-coach-review {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.25) 0%, rgba(252, 76, 2, 0.2) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  color: #e9d5ff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-coach-review:hover {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.45) 0%, rgba(252, 76, 2, 0.35) 100%);
+  border-color: #c084fc;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+/* AI Coach Modal Components */
+.coach-modal-card {
+  max-width: 640px;
+}
+
+.coach-header-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.coach-score-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coach-score-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.35rem;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(15, 23, 42, 0.8) 100%);
+  border: 2px solid #10b981;
+  color: #34d399;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+  flex-shrink: 0;
+}
+
+.coach-score-circle.amber {
+  border-color: #f59e0b;
+  color: #fbbf24;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.25);
+}
+
+.coach-score-circle.blue {
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+}
+
+.coach-score-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.coach-score-grade {
+  font-weight: 800;
+  font-size: 1.02rem;
+  color: #fff;
+}
+
+.coach-score-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.coach-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 560px) {
+  .coach-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.coach-stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.coach-stat-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+
+.coach-stat-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.coach-section {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.coach-section-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.coach-box {
+  border-left: 3px solid;
+  padding: 10px 12px;
+  border-radius: 0 8px 8px 0;
+  background: rgba(255, 255, 255, 0.02);
+  margin-bottom: 8px;
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.coach-box:last-child {
+  margin-bottom: 0;
+}
+
+.coach-box.emerald {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.coach-box.amber {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.coach-box.blue {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.coach-box.purple {
+  border-color: #a855f7;
+  background: rgba(168, 85, 247, 0.06);
+}
+

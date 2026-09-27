@@ -664,8 +664,15 @@ function renderStage(stageKey, containerId) {
                 <div class="day-desc">${day.desc}</div>
                 ${matchedAct ? `
                   <div class="strava-matched-pill">
-                    <span>⚡ <strong>Strava 活動連動：</strong>${matchedAct.name} (${matchedAct.distanceKm}km @ ${matchedAct.avgPace}${matchedAct.avgHR ? ', 心率 ' + matchedAct.avgHR + 'bpm' : ''})</span>
-                    <a href="https://www.strava.com/activities/${matchedAct.id}" target="_blank" onclick="event.stopPropagation()">Strava 查看 ➔</a>
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 6px;">
+                      <span>⚡ <strong>Strava 活動連動：</strong>${matchedAct.name} (${matchedAct.distanceKm}km @ ${matchedAct.avgPace}${matchedAct.avgHR ? ', 心率 ' + matchedAct.avgHR + 'bpm' : ''})</span>
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <button class="btn-coach-review" type="button" onclick="event.preventDefault(); event.stopPropagation(); openCoachReviewModal('${matchedAct.id}', '${day.id}')">
+                          🧠 AI 教練評析
+                        </button>
+                        <a href="https://www.strava.com/activities/${matchedAct.id}" target="_blank" onclick="event.stopPropagation()">Strava ➔</a>
+                      </div>
+                    </div>
                   </div>
                 ` : ''}
               </div>
@@ -778,8 +785,15 @@ function renderWifePlan() {
                 <div class="day-desc">${day.desc}</div>
                 ${matchedAct ? `
                   <div class="strava-matched-pill">
-                    <span>⚡ <strong>Strava 活動連動：</strong>${matchedAct.name} (${matchedAct.distanceKm}km @ ${matchedAct.avgPace}${matchedAct.avgHR ? ', 心率 ' + matchedAct.avgHR + 'bpm' : ''})</span>
-                    <a href="https://www.strava.com/activities/${matchedAct.id}" target="_blank" onclick="event.stopPropagation()">Strava 查看 ➔</a>
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 6px;">
+                      <span>⚡ <strong>Strava 活動連動：</strong>${matchedAct.name} (${matchedAct.distanceKm}km @ ${matchedAct.avgPace}${matchedAct.avgHR ? ', 心率 ' + matchedAct.avgHR + 'bpm' : ''})</span>
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <button class="btn-coach-review" type="button" onclick="event.preventDefault(); event.stopPropagation(); openCoachReviewModal('${matchedAct.id}', '${day.id}')">
+                          🧠 AI 教練評析
+                        </button>
+                        <a href="https://www.strava.com/activities/${matchedAct.id}" target="_blank" onclick="event.stopPropagation()">Strava ➔</a>
+                      </div>
+                    </div>
                   </div>
                 ` : ''}
               </div>
@@ -1246,7 +1260,10 @@ window.syncStravaActivities = async function(isManual = false) {
         movingTimeMin: Math.round(act.moving_time / 60),
         avgPace: formatPace(act.average_speed),
         avgHR: act.average_heartrate ? Math.round(act.average_heartrate) : null,
-        maxHR: act.max_heartrate ? Math.round(act.max_heartrate) : null
+        maxHR: act.max_heartrate ? Math.round(act.max_heartrate) : null,
+        totalElevationGain: Math.round(act.total_elevation_gain || 0),
+        avgCadence: act.average_cadence ? Math.round(act.average_cadence * (act.average_cadence < 120 ? 2 : 1)) : null,
+        elapsedTimeMin: Math.round((act.elapsed_time || act.moving_time) / 60)
       }));
 
     localStorage.setItem(STRAVA_STORAGE.ACTIVITIES, JSON.stringify(runs));
@@ -1493,15 +1510,20 @@ window.openActivitiesModal = function() {
             ${run.avgHR ? ` • 心率: <strong>${run.avgHR} bpm</strong>` : ""}
           </div>
         </div>
-        <div style="text-align: right; flex-shrink: 0;">
+        <div style="text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
           ${isMatched ? `
-            <span class="badge-tag" style="background: rgba(16,185,129,0.2); color: #34d399; margin-bottom: 4px; display: inline-block;">
+            <span class="badge-tag" style="background: rgba(16,185,129,0.2); color: #34d399; margin-bottom: 2px; display: inline-block;">
               ✓ 已配對打勾
-            </span><br>
+            </span>
           ` : ""}
-          <a href="https://www.strava.com/activities/${run.id}" target="_blank" style="font-size: 0.76rem; color: #38bdf8; text-decoration: underline;">
-            Strava 詳情 ➔
-          </a>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button class="btn-coach-review" type="button" onclick="openCoachReviewModal('${run.id}')">
+              🧠 AI 教練評析
+            </button>
+            <a href="https://www.strava.com/activities/${run.id}" target="_blank" style="font-size: 0.74rem; color: #38bdf8; text-decoration: underline;">
+              Strava ➔
+            </a>
+          </div>
         </div>
       </div>
     `;
@@ -1514,6 +1536,451 @@ window.openActivitiesModal = function() {
 window.closeActivitiesModal = function() {
   const modal = document.getElementById("strava-activities-modal");
   if (modal) modal.style.display = "none";
+};
+
+// ==========================================================================
+// AI Running Coach Review & Analysis Engine
+// ==========================================================================
+let currentReviewReportMarkdown = "";
+
+function parsePaceSeconds(paceStr) {
+  if (!paceStr) return null;
+  const match = paceStr.match(/(\d+)['’:](\d+)/);
+  if (!match) return null;
+  return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+}
+
+function formatPaceFromSeconds(totalSecs) {
+  if (!totalSecs || totalSecs <= 0) return "--'--\"";
+  const m = Math.floor(totalSecs / 60);
+  const s = Math.round(totalSecs % 60);
+  return `${m}'${s.toString().padStart(2, "0")}"`;
+}
+
+function findWorkoutDayById(dayId) {
+  if (!dayId) return null;
+  for (const sKey of Object.keys(TRAINING_DATA)) {
+    const stage = TRAINING_DATA[sKey];
+    for (const w of stage.weeks) {
+      for (const d of w.days) {
+        if (d.id === dayId) return { day: d, week: w, stage: stage, runner: "tj" };
+      }
+    }
+  }
+  for (const w of WIFE_TRAINING_DATA.weeks) {
+    for (const d of w.days) {
+      if (d.id === dayId) return { day: d, week: w, runner: "wife" };
+    }
+  }
+  return null;
+}
+
+function getMatchedDayForActivity(activityId) {
+  const matchedMap = getMatchedMap();
+  for (const [dayId, act] of Object.entries(matchedMap)) {
+    if (act.id === activityId || String(act.id) === String(activityId)) {
+      return findWorkoutDayById(dayId);
+    }
+  }
+  return null;
+}
+
+function analyzeRunningActivity(act, matchedCtx, currentRunner) {
+  const dist = parseFloat(act.distanceKm) || 0;
+  const paceSec = parsePaceSeconds(act.avgPace);
+  const hr = act.avgHR ? parseInt(act.avgHR, 10) : null;
+  const maxHr = act.maxHR ? parseInt(act.maxHR, 10) : null;
+  const elev = act.totalElevationGain || 0;
+  const cadence = act.avgCadence || null;
+
+  // Determine workout type
+  let workoutType = "easy";
+  let workoutName = "自主有氧練跑";
+  let targetDistKm = dist;
+  let targetPaceMinSec = null;
+  let targetPaceMaxSec = null;
+  let targetHRZone = "Z2 (128-145 bpm)";
+  let isWife = currentRunner === "wife";
+
+  if (matchedCtx && matchedCtx.day) {
+    const d = matchedCtx.day;
+    workoutType = d.type;
+    workoutName = `${matchedCtx.week.num} ${d.dayName}：${d.title}`;
+    if (matchedCtx.runner === "wife") isWife = true;
+
+    // Parse target distance
+    const distMatch = d.dist.match(/([\d\.]+)/);
+    if (distMatch) targetDistKm = parseFloat(distMatch[1]);
+
+    // Parse target pace
+    const paces = d.pace.match(/(\d+)['’:](\d+)/g);
+    if (paces && paces.length >= 2) {
+      targetPaceMinSec = parsePaceSeconds(paces[0]);
+      targetPaceMaxSec = parsePaceSeconds(paces[1]);
+      if (targetPaceMinSec > targetPaceMaxSec) {
+        const tmp = targetPaceMinSec; targetPaceMinSec = targetPaceMaxSec; targetPaceMaxSec = tmp;
+      }
+    } else if (paces && paces.length === 1) {
+      const mid = parsePaceSeconds(paces[0]);
+      targetPaceMinSec = mid - 10;
+      targetPaceMaxSec = mid + 10;
+    }
+    targetHRZone = d.hr;
+  } else {
+    // Autodetect based on distance
+    if (dist >= 11) {
+      workoutType = "long";
+      workoutName = "週末長距離耐力跑 (LSD)";
+      targetDistKm = dist;
+      targetPaceMinSec = isWife ? parsePaceSeconds("7'10\"") : parsePaceSeconds("6'30\"");
+      targetPaceMaxSec = isWife ? parsePaceSeconds("7'30\"") : parsePaceSeconds("7'00\"");
+      targetHRZone = "Z2 (128-145 bpm)";
+    } else if (dist >= 5 && paceSec && paceSec < (isWife ? 430 : 380)) {
+      workoutType = "quality";
+      workoutName = "節奏/門檻質量跑";
+      targetDistKm = dist;
+      targetPaceMinSec = isWife ? parsePaceSeconds("6'55\"") : parsePaceSeconds("6'10\"");
+      targetPaceMaxSec = isWife ? parsePaceSeconds("7'10\"") : parsePaceSeconds("6'30\"");
+      targetHRZone = "Z3~Z4 (145-165 bpm)";
+    } else {
+      workoutType = "easy";
+      workoutName = "基礎有氧/恢復慢跑";
+      targetDistKm = dist;
+      targetPaceMinSec = isWife ? parsePaceSeconds("7'20\"") : parsePaceSeconds("6'45\"");
+      targetPaceMaxSec = isWife ? parsePaceSeconds("7'50\"") : parsePaceSeconds("7'20\"");
+      targetHRZone = "Z1~Z2 (120-142 bpm)";
+    }
+  }
+
+  // 1. Distance Adherence (Max 35 pts)
+  let distScore = 35;
+  let distComment = "";
+  if (targetDistKm > 0) {
+    const ratio = dist / targetDistKm;
+    if (ratio >= 0.95 && ratio <= 1.25) {
+      distScore = 35;
+      distComment = `里程達成度 ${Math.round(ratio * 100)}%，完美達成課表目標！`;
+    } else if (ratio > 1.25) {
+      distScore = 32;
+      distComment = `跑量超標完成 (${dist}km vs 目標 ${targetDistKm}km)，體能儲備充沛，注意跑後肌肉放鬆。`;
+    } else if (ratio >= 0.8) {
+      distScore = 28;
+      distComment = `完成目標里程的 ${Math.round(ratio * 100)}%，有效刺激有氧耐力。`;
+    } else {
+      distScore = 20;
+      distComment = `本次完成 ${dist}km (課表目標 ${targetDistKm}km)，若遇身體疲勞適時停跑減量是明智的選擇。`;
+    }
+  }
+
+  // 2. Pace Execution (Max 35 pts)
+  let paceScore = 32;
+  let paceComment = "";
+  if (paceSec && targetPaceMinSec && targetPaceMaxSec) {
+    if (paceSec >= targetPaceMinSec && paceSec <= targetPaceMaxSec) {
+      paceScore = 35;
+      paceComment = `平均配速 ${act.avgPace} 精準切中目標區間 (${formatPaceFromSeconds(targetPaceMinSec)} ~ ${formatPaceFromSeconds(targetPaceMaxSec)})！體感掌控度極高。`;
+    } else if (paceSec < targetPaceMinSec) {
+      const diffSec = targetPaceMinSec - paceSec;
+      if (workoutType === "easy" || workoutType === "long") {
+        if (diffSec <= 15) {
+          paceScore = 32;
+          paceComment = `配速略微偏快 (${act.avgPace})，狀態極佳但長距離要留有餘力，壓抑起跑興奮感。`;
+        } else {
+          paceScore = 26;
+          paceComment = `配速過衝！均速 ${act.avgPace} 比目標快了 ${diffSec} 秒/km。請留意「長距離跑太快」容易消耗過多肌醣原，延緩微血管增生效益。`;
+        }
+      } else {
+        paceScore = 35;
+        paceComment = `配速強勁 (${act.avgPace})！比預期節奏更快，速耐力爆發力相當優秀！`;
+      }
+    } else {
+      const diffSec = paceSec - targetPaceMaxSec;
+      if (diffSec <= 20) {
+        paceScore = 30;
+        paceComment = `配速沉穩 (${act.avgPace})，順應當天氣溫與體能調節節奏，符合耐力訓練原則。`;
+      } else {
+        paceScore = 25;
+        paceComment = `配速略為保守 (${act.avgPace})，建議後續可嘗試後段微幅巡航加溫 (Negative Split)。`;
+      }
+    }
+  } else {
+    paceComment = `平均配速 ${act.avgPace}，節奏勻稱。`;
+  }
+
+  // 3. Heart Rate Quality (Max 30 pts)
+  let hrScore = 28;
+  let hrComment = "";
+  let hrZoneDetail = "";
+  if (hr) {
+    if (hr < 128) {
+      hrZoneDetail = "Z1 積極恢復區 (<128 bpm)";
+      hrScore = (workoutType === "easy") ? 30 : 25;
+      hrComment = "心率處於低強度有氧，促進乳酸代謝與微血管循環，恢復效益顯著。";
+    } else if (hr <= 145) {
+      hrZoneDetail = "Z2 基礎有氧耐力區 (128-145 bpm)";
+      hrScore = 30;
+      hrComment = "心率完美鎖定在 Z2 黃金耐力區間！這是強化脂肪燃燒引擎與提升心臟每搏輸出量的最佳心率。";
+    } else if (hr <= 158) {
+      hrZoneDetail = "Z3 節奏有氧 / 馬拉松配速區 (146-158 bpm)";
+      if (workoutType === "quality" || workoutType === "race") {
+        hrScore = 30;
+        hrComment = "心率處於馬拉松配速高效率區，穩定提升長距離抗疲勞耐受力。";
+      } else {
+        hrScore = 25;
+        hrComment = "心率略高進入 Z3 區間。週末長距離時若長期待在 Z3 容易累積深層疲勞，建議下次起跑前 3K 有意壓低心率。";
+      }
+    } else if (hr <= 170) {
+      hrZoneDetail = "Z4 乳酸閾值門檻區 (159-170 bpm)";
+      if (workoutType === "quality") {
+        hrScore = 30;
+        hrComment = "心肺強烈刺激！成功觸及乳酸清除極限，對半馬最後 5 公里的巡航速耐力大有裨益。";
+      } else {
+        hrScore = 20;
+        hrComment = "心率偏高進入門檻區！對於長距離或輕鬆跑而言強度偏大，跑後需特別強化補水與深層肌肉伸展。";
+      }
+    } else {
+      hrZoneDetail = "Z5 無氧極限區 (>170 bpm)";
+      hrScore = 18;
+      hrComment = "已進入無氧高負荷區間，無氧代謝佔比高，注意防範肌肉拉傷與熱衰竭。";
+    }
+  } else {
+    hrZoneDetail = "未偵測到心率數據";
+    hrScore = 25;
+    hrComment = "本次未配戴心率設備或未傳入心率，建議搭配 Apple Watch 記錄心率以獲取更精準的有氧效率分析。";
+  }
+
+  const totalScore = Math.min(100, Math.max(50, distScore + paceScore + hrScore));
+  let grade = "S";
+  let gradeTitle = "卓越執行 (S級・神作)";
+  let gradeColor = "emerald";
+
+  if (totalScore >= 90) {
+    grade = "S";
+    gradeTitle = "卓越執行 (S級・神作)";
+    gradeColor = "emerald";
+  } else if (totalScore >= 80) {
+    grade = "A";
+    gradeTitle = "優異達標 (A級・穩健)";
+    gradeColor = "blue";
+  } else if (totalScore >= 70) {
+    grade = "B";
+    gradeTitle = "良好完成 (B級・漸入佳境)";
+    gradeColor = "amber";
+  } else {
+    grade = "C";
+    gradeTitle = "調整觀察 (C級・持續成長)";
+    gradeColor = "amber";
+  }
+
+  // Highlights
+  const highlights = [];
+  highlights.push(`✅ <strong>里程累積：</strong>完成 ${dist} km 實際跑量，穩健堆疊跑季體能庫存。`);
+  highlights.push(`⚡ <strong>配速點評：</strong>${paceComment}`);
+  if (hr) {
+    highlights.push(`❤️ <strong>心率指標：</strong>平均心率 ${hr} bpm (${hrZoneDetail})，${hrComment}`);
+  }
+  if (elev > 25) {
+    highlights.push(`⛰️ <strong>起伏爬升：</strong>累積爬升 +${elev}m，同時強化了小腿比目魚肌與臀大肌推蹬力道。`);
+  }
+  if (cadence) {
+    highlights.push(`👟 <strong>平均步頻：</strong>約 ${cadence} spm，${cadence >= 174 ? "步頻輕快高效，落地衝擊小！" : "步頻偏低，可嘗試縮小步幅、提高換腿頻率至 175-180。"}`);
+  }
+
+  // Suggestions & Areas to watch
+  const suggestions = [];
+  if (workoutType === "long" && paceSec && targetPaceMinSec && paceSec < targetPaceMinSec) {
+    suggestions.push("⚠️ <strong>壓抑興奮感：</strong>長跑切忌前半程衝刺，建議練習「前慢後穩」的負分割 (Negative Split)，後半程體能才不會被掏空。");
+  }
+  if (hr && hr > 155 && (workoutType === "long" || workoutType === "easy")) {
+    suggestions.push("⚠️ <strong>有氧心率漂移：</strong>後段心率升高可能源於脫水、氣溫或體溫上升。下次練跑每 20-25 分鐘定時抿一口水或電解質液。");
+  }
+  if (isWife) {
+    suggestions.push("🌸 <strong>老婆專屬心法：</strong>只要持續踏上跑道就是滿分！保持呼吸均勻、笑著跑完比任何數字都更重要。老公隨時在一旁為妳護航！");
+  } else {
+    suggestions.push("🎯 <strong>半馬突破核心：</strong>把握每週唯一的長距離課表，將 6'15\"~6'30\" 的肌肉記憶雕刻進神經系統，比賽當天身體自然會接管配速！");
+  }
+
+  // Recovery Prescription
+  const waterEst = Math.round(dist * 60);
+  const recoveryTips = [
+    `💧 <strong>補水處方：</strong>建議跑後 2 小時內分次補足約 <strong>${waterEst} ~ ${waterEst + 250} ml</strong> 水分與含鈉電解質飲品。`,
+    `🥪 <strong>黃金代謝窗口：</strong>跑後 30-45 分鐘內補充「碳水：蛋白質 ＝ 3:1」組合（例如：微糖豆漿 400ml + 香蕉或小地瓜），加速肌醣原回補。`,
+    `🧘 <strong>放鬆重點：</strong>使用滾筒深度放鬆<strong>小腿腓腸肌、大腿外側髂脛束 (ITB)</strong> 與臀中肌，並踩壓網球舒緩足底筋膜各 2-3 分鐘。`
+  ];
+
+  return {
+    dist,
+    pace: act.avgPace,
+    hr,
+    maxHr,
+    elev,
+    cadence,
+    movingTimeMin: act.movingTimeMin,
+    workoutName,
+    workoutType,
+    totalScore,
+    grade,
+    gradeTitle,
+    gradeColor,
+    distComment,
+    paceComment,
+    hrComment,
+    hrZoneDetail,
+    highlights,
+    suggestions,
+    recoveryTips,
+    isWife
+  };
+}
+
+window.openCoachReviewModal = function(activityId, dayId) {
+  const modal = document.getElementById("strava-coach-modal");
+  const body = document.getElementById("strava-coach-modal-body");
+  if (!modal || !body) return;
+
+  // Retrieve activity
+  let runs = [];
+  try {
+    const raw = localStorage.getItem(STRAVA_STORAGE.ACTIVITIES);
+    if (raw) runs = JSON.parse(raw);
+  } catch (e) {}
+
+  let act = runs.find(r => String(r.id) === String(activityId));
+  if (!act) {
+    const matchedMap = getMatchedMap();
+    for (const val of Object.values(matchedMap)) {
+      if (String(val.id) === String(activityId)) {
+        act = val;
+        break;
+      }
+    }
+  }
+
+  if (!act) {
+    showToast("找不到該筆跑步活動數據，請先重新同步 Strava！");
+    return;
+  }
+
+  const currentRunner = localStorage.getItem(STORAGE_KEY_RUNNER) || "tj";
+  const matchedCtx = dayId ? findWorkoutDayById(dayId) : getMatchedDayForActivity(activityId);
+  const analysis = analyzeRunningActivity(act, matchedCtx, currentRunner);
+
+  // Generate Markdown report for copying
+  currentReviewReportMarkdown = `### 🏃‍♂️ AI 跑步教練評析與建議報告
+- **活動名稱**：${act.name || "跑步訓練"}
+- **日期**：${act.date || "近期"}
+- **對標課表**：${analysis.workoutName}
+- **核心數據**：距離 ${analysis.dist} km | 配速 ${analysis.pace} | 耗時 ${act.movingTimeMin || "--"} 分鐘 | 平均心率 ${analysis.hr ? analysis.hr + " bpm" : "未偵測"}
+- **執行評分**：${analysis.totalScore} / 100 分 (${analysis.gradeTitle})
+
+#### 🌟 本次訓練亮點
+${analysis.highlights.map(h => "- " + h.replace(/<[^>]*>/g, "")).join("\n")}
+
+#### ⚠️ 教練建議與注意事項
+${analysis.suggestions.map(s => "- " + s.replace(/<[^>]*>/g, "")).join("\n")}
+
+#### 🧘 跑後恢復指南
+${analysis.recoveryTips.map(r => "- " + r.replace(/<[^>]*>/g, "")).join("\n")}
+`;
+
+  // Render HTML
+  body.innerHTML = `
+    <!-- Top Score Banner -->
+    <div class="coach-header-card">
+      <div class="coach-score-box">
+        <div class="coach-score-circle ${analysis.gradeColor}">
+          ${analysis.totalScore}
+        </div>
+        <div class="coach-score-meta">
+          <div class="coach-score-grade">${analysis.gradeTitle}</div>
+          <div class="coach-score-sub">🎯 對標課表：<strong>${analysis.workoutName}</strong></div>
+        </div>
+      </div>
+      <div>
+        <span class="badge-tag" style="background: rgba(255,255,255,0.1); color: #fff; font-size: 0.78rem;">
+          📅 ${act.date || "近期活動"}
+        </span>
+      </div>
+    </div>
+
+    <!-- Core Metrics Grid -->
+    <div class="coach-stats-grid">
+      <div class="coach-stat-card">
+        <div class="coach-stat-label">實際距離</div>
+        <div class="coach-stat-value" style="color: #ff8b57;">${analysis.dist} <span style="font-size: 0.75rem;">km</span></div>
+      </div>
+      <div class="coach-stat-card">
+        <div class="coach-stat-label">平均配速</div>
+        <div class="coach-stat-value" style="color: #38bdf8;">${analysis.pace}</div>
+      </div>
+      <div class="coach-stat-card">
+        <div class="coach-stat-label">平均心率</div>
+        <div class="coach-stat-value" style="color: #f43f5e;">${analysis.hr ? analysis.hr + ' <span style="font-size:0.75rem;">bpm</span>' : '--'}</div>
+      </div>
+      <div class="coach-stat-card">
+        <div class="coach-stat-label">耗時 / 爬升</div>
+        <div class="coach-stat-value" style="font-size: 0.88rem; color: #a78bfa;">${act.movingTimeMin || "--"}m / +${analysis.elev}m</div>
+      </div>
+    </div>
+
+    <!-- Section 1: Highlights -->
+    <div class="coach-section">
+      <div class="coach-section-title">
+        <span>🌟</span>
+        <span>運動生理學剖析與訓練亮點</span>
+      </div>
+      ${analysis.highlights.map(h => `<div class="coach-box emerald">${h}</div>`).join("")}
+    </div>
+
+    <!-- Section 2: Coach Suggestions -->
+    <div class="coach-section">
+      <div class="coach-section-title">
+        <span>💡</span>
+        <span>教練關鍵微調與下步建議</span>
+      </div>
+      ${analysis.suggestions.map(s => `<div class="coach-box amber">${s}</div>`).join("")}
+    </div>
+
+    <!-- Section 3: Recovery Prescription -->
+    <div class="coach-section">
+      <div class="coach-section-title">
+        <span>🧘</span>
+        <span>跑後黃金恢復處方箋</span>
+      </div>
+      ${analysis.recoveryTips.map(r => `<div class="coach-box purple">${r}</div>`).join("")}
+    </div>
+
+    <div style="text-align: right; margin-top: 6px;">
+      <a href="https://www.strava.com/activities/${act.id}" target="_blank" style="font-size: 0.78rem; color: #ff8b57; text-decoration: underline;">
+        在 Strava App / 網頁查看原始分段圖 ➔
+      </a>
+    </div>
+  `;
+
+  modal.style.display = "flex";
+};
+
+window.closeCoachReviewModal = function() {
+  const modal = document.getElementById("strava-coach-modal");
+  if (modal) modal.style.display = "none";
+};
+
+window.copyCoachReviewText = function() {
+  if (!currentReviewReportMarkdown) {
+    showToast("目前無評析報告可複製！");
+    return;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(currentReviewReportMarkdown)
+      .then(() => {
+        showToast("📋 已複製教練診斷報告！可直接貼在對話框與 AI 深入討論。");
+      })
+      .catch(() => {
+        prompt("請手動選取並複製以下評析報告：", currentReviewReportMarkdown);
+      });
+  } else {
+    prompt("請手動選取並複製以下評析報告：", currentReviewReportMarkdown);
+  }
 };
 
 // ==========================================================================

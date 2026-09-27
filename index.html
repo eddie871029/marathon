@@ -765,9 +765,35 @@
     </div>
   </div>
 
+  <!-- ========================================================================
+       MODAL 3: AI Coach Review & Suggestions Modal
+       ======================================================================== -->
+  <div id="strava-coach-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card coach-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span style="font-size: 1.25rem;">🧠</span>
+          <span>AI 跑步教練深度評析與建議</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeCoachReviewModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="strava-coach-modal-body">
+        <p style="text-align: center; color: var(--text-muted); padding: 20px;">正在進行運動科學運算...</p>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <button class="btn-secondary btn-sm" onclick="copyCoachReviewText()">
+          📋 複製完整評析報告 (貼給 AI / 紀錄)
+        </button>
+        <button class="btn-strava btn-sm" onclick="closeCoachReviewModal()">
+          完成檢視
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toast-container"></div>
 
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
