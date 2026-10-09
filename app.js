@@ -635,9 +635,11 @@ function renderStage(stageKey, containerId) {
     </div>
   `;
 
+  const currentWeekInfo = getCurrentWeekInfo("tj");
+
   stage.weeks.forEach((week, wIndex) => {
-    const isFirstWeek = (stageKey === 'stage1' && wIndex === 0);
-    const expandedClass = isFirstWeek ? "expanded current-week" : "";
+    const isCurrentWeek = (currentWeekInfo && currentWeekInfo.weekId === week.id && currentWeekInfo.stageKey === stageKey);
+    const expandedClass = isCurrentWeek ? "expanded current-week" : "";
 
     html += `
       <div class="week-card ${expandedClass}" id="card-${week.id}">
@@ -758,9 +760,11 @@ function renderWifePlan() {
     </div>
   `;
 
+  const currentWeekInfo = getCurrentWeekInfo("wife");
+
   data.weeks.forEach((week, wIndex) => {
-    const isFirstWeek = (wIndex === 0);
-    const expandedClass = isFirstWeek ? "expanded current-week" : "";
+    const isCurrentWeek = (currentWeekInfo && currentWeekInfo.weekId === week.id);
+    const expandedClass = isCurrentWeek ? "expanded current-week" : "";
 
     html += `
       <div class="week-card ${expandedClass}" id="card-${week.id}">
@@ -952,6 +956,7 @@ function switchRunner(runner) {
 
   // Scroll to top of runner view
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateCurrentWeekButton();
 }
 window.switchRunner = switchRunner;
 
@@ -1000,25 +1005,131 @@ function setupNavigation() {
   });
 }
 
+// ==========================================================================
+// Date Range & Calendar Helpers (Strict Non-Overlapping)
+// ==========================================================================
+function parseDateRange(dateStr, defaultYear = 2026) {
+  if (!dateStr || !dateStr.includes("-")) return null;
+  const parts = dateStr.split("-").map(p => p.trim());
+  if (parts.length !== 2) return null;
+
+  const [m1, d1] = parts[0].split("/").map(Number);
+  const [m2, d2] = parts[1].split("/").map(Number);
+
+  let y1 = defaultYear;
+  let y2 = defaultYear;
+  // Year rollover for Jan / Feb 2027
+  if (m1 <= 2) y1 = 2027;
+  if (m2 <= 2) y2 = 2027;
+
+  // Strict boundaries: 00:00:00 of start date to 23:59:59 of end date
+  const start = new Date(y1, m1 - 1, d1, 0, 0, 0);
+  const end = new Date(y2, m2 - 1, d2, 23, 59, 59);
+  return { start, end };
+}
+
+function findWeekForDate(dateObj, runner = "tj") {
+  if (!dateObj) return null;
+  const t = dateObj.getTime();
+
+  if (runner === "wife") {
+    for (const week of WIFE_TRAINING_DATA.weeks) {
+      const range = parseDateRange(week.date);
+      if (range && t >= range.start.getTime() && t <= range.end.getTime()) {
+        return { week, runner: "wife" };
+      }
+    }
+  } else {
+    for (const stageKey of Object.keys(TRAINING_DATA)) {
+      const stage = TRAINING_DATA[stageKey];
+      for (const week of stage.weeks) {
+        const range = parseDateRange(week.date);
+        if (range && t >= range.start.getTime() && t <= range.end.getTime()) {
+          return { week, stageKey, stage, runner: "tj" };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function getCurrentWeekInfo(runner = "tj") {
+  const now = new Date();
+  const weekMatch = findWeekForDate(now, runner);
+
+  if (weekMatch) {
+    return {
+      weekId: weekMatch.week.id,
+      stageKey: weekMatch.stageKey || null,
+      weekNum: weekMatch.week.num,
+      weekDate: weekMatch.week.date,
+      cardId: runner === "wife" ? `card-wife-${weekMatch.week.id}` : `card-${weekMatch.week.id}`
+    };
+  }
+
+  // Fallback if before plan start or after plan end
+  if (runner === "wife") {
+    const firstWeek = WIFE_TRAINING_DATA.weeks[0];
+    const lastWeek = WIFE_TRAINING_DATA.weeks[WIFE_TRAINING_DATA.weeks.length - 1];
+    const firstRange = parseDateRange(firstWeek.date);
+    if (firstRange && now < firstRange.start) {
+      return { weekId: firstWeek.id, weekNum: firstWeek.num, weekDate: firstWeek.date, cardId: `card-wife-${firstWeek.id}` };
+    }
+    return { weekId: lastWeek.id, weekNum: lastWeek.num, weekDate: lastWeek.date, cardId: `card-wife-${lastWeek.id}` };
+  } else {
+    const stage1 = TRAINING_DATA.stage1;
+    const firstWeek = stage1.weeks[0];
+    const firstRange = parseDateRange(firstWeek.date);
+    if (firstRange && now < firstRange.start) {
+      return { weekId: firstWeek.id, stageKey: "stage1", weekNum: firstWeek.num, weekDate: firstWeek.date, cardId: `card-${firstWeek.id}` };
+    }
+    const stage3 = TRAINING_DATA.stage3;
+    const lastWeek = stage3.weeks[stage3.weeks.length - 1];
+    return { weekId: lastWeek.id, stageKey: "stage3", weekNum: lastWeek.num, weekDate: lastWeek.date, cardId: `card-${lastWeek.id}` };
+  }
+}
+
+function updateCurrentWeekButton() {
+  const currentRunner = localStorage.getItem(STORAGE_KEY_RUNNER) || "tj";
+  const info = getCurrentWeekInfo(currentRunner);
+  const btnText = document.getElementById("floating-week-text");
+  if (btnText && info) {
+    btnText.textContent = `跳至本週課表 (${info.weekNum})`;
+  }
+}
+window.updateCurrentWeekButton = updateCurrentWeekButton;
+
 // Quick jump to current week
 window.jumpToCurrentWeek = function() {
   const currentRunner = localStorage.getItem(STORAGE_KEY_RUNNER) || "tj";
+  const info = getCurrentWeekInfo(currentRunner);
+  if (!info) return;
 
-  if (currentRunner === "wife") {
-    const card = document.getElementById("card-wife-w1");
-    if (card) {
-      if (!card.classList.contains("expanded")) card.classList.add("expanded");
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  } else {
-    setTimeout(() => {
-      const card = document.getElementById("card-w1");
-      if (card) {
-        if (!card.classList.contains("expanded")) card.classList.add("expanded");
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (currentRunner === "tj" && info.stageKey) {
+    const navBtns = document.querySelectorAll("#view-tj .nav-btn");
+    navBtns.forEach(btn => {
+      if (btn.getAttribute("data-tab") === info.stageKey) {
+        btn.click();
       }
-    }, 100);
+    });
+  } else if (currentRunner === "wife") {
+    const planBtn = document.querySelector("#view-wife .nav-btn[data-tab='plan']");
+    if (planBtn) planBtn.click();
   }
+
+  setTimeout(() => {
+    const card = document.getElementById(info.cardId);
+    if (card) {
+      if (!card.classList.contains("expanded")) {
+        card.classList.add("expanded");
+      }
+      card.classList.add("current-week");
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      showToast(`已跳至本週課表 (${info.weekNum}：${info.weekDate})`);
+    } else {
+      showToast(`正在前往 ${info.weekNum} 課表...`);
+    }
+  }, 120);
 };
 
 // ==========================================================================
@@ -1312,110 +1423,127 @@ window.syncStravaActivities = async function(isManual = false) {
   }
 };
 
-// Smart Auto-Check Matcher
+// Smart Auto-Check Matcher (Strict Non-Overlapping & Dedicated Runner Binding)
 function matchStravaActivitiesToWorkouts(runs) {
+  if (!runs || runs.length === 0) return 0;
+
+  // Determine target runner: default "tj" unless configured
+  const targetRunner = localStorage.getItem("strava_sync_target_runner") || "tj";
+
   const matchedMap = getMatchedMap();
   let newMatchCount = 0;
 
-  // Helper to parse date strings "09/12 - 09/20"
-  function parseDateRange(dateStr, defaultYear = 2026) {
-    if (!dateStr || !dateStr.includes("-")) return null;
-    const parts = dateStr.split("-").map(p => p.trim());
-    if (parts.length !== 2) return null;
+  // Sort activities chronologically (oldest to newest)
+  const sortedRuns = [...runs].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
 
-    const [m1, d1] = parts[0].split("/").map(Number);
-    const [m2, d2] = parts[1].split("/").map(Number);
-
-    let y1 = defaultYear;
-    let y2 = defaultYear;
-    // Year rollover for Jan / Feb 2027
-    if (m1 <= 2) y1 = 2027;
-    if (m2 <= 2) y2 = 2027;
-
-    const start = new Date(y1, m1 - 1, d1, 0, 0, 0);
-    const end = new Date(y2, m2 - 1, d2, 23, 59, 59);
-    return { start, end };
-  }
-
-  // Iterate all runs
-  runs.forEach(act => {
+  sortedRuns.forEach(act => {
     if (!act.date) return;
-    const actDate = new Date(act.date + "T12:00:00");
+    const [y, m, d] = act.date.split("-").map(Number);
+    const actDate = new Date(y, m - 1, d, 12, 0, 0);
 
-    // Check TJ's stages
-    Object.keys(TRAINING_DATA).forEach(stageKey => {
-      const stage = TRAINING_DATA[stageKey];
-      stage.weeks.forEach(week => {
-        const range = parseDateRange(week.date);
-        if (!range) return;
+    // Strictly find the week this date belongs to!
+    const weekMatch = findWeekForDate(actDate, targetRunner);
+    if (!weekMatch) return; // Outside training calendar or not in this runner's plan
 
-        // Allow +/- 2 days tolerance
-        const rangeStart = new Date(range.start.getTime() - 2 * 86400000);
-        const rangeEnd = new Date(range.end.getTime() + 2 * 86400000);
+    const week = weekMatch.week;
 
-        if (actDate >= rangeStart && actDate <= rangeEnd) {
-          // Find matching workout day in this week
-          let targetDay = null;
+    // Check if this activity is already matched
+    const isActAlreadyMatched = Object.values(matchedMap).some(m => String(m.id) === String(act.id));
+    if (isActAlreadyMatched) return;
 
-          if (act.distanceKm >= 9) {
-            // Long run
-            targetDay = week.days.find(d => d.type === "long" || d.type === "race" || d.type === "couple");
-          } else if (act.distanceKm >= 3.5) {
-            // Quality or Easy run
-            targetDay = week.days.find(d => (d.type === "quality" || d.type === "easy") && !matchedMap[d.id]);
-          }
+    let targetDay = null;
 
-          if (targetDay && !matchedMap[targetDay.id]) {
-            matchedMap[targetDay.id] = {
-              id: act.id,
-              name: act.name,
-              distanceKm: act.distanceKm,
-              avgPace: act.avgPace,
-              avgHR: act.avgHR,
-              date: act.date
-            };
-            setWorkoutChecked(targetDay.id, true, "tj");
-            newMatchCount++;
-          }
-        }
-      });
-    });
-
-    // Check Wife's plan
-    WIFE_TRAINING_DATA.weeks.forEach(week => {
-      const range = parseDateRange(week.date);
-      if (!range) return;
-
-      const rangeStart = new Date(range.start.getTime() - 2 * 86400000);
-      const rangeEnd = new Date(range.end.getTime() + 2 * 86400000);
-
-      if (actDate >= rangeStart && actDate <= rangeEnd) {
-        let targetDay = null;
-        if (act.distanceKm >= 7) {
-          targetDay = week.days.find(d => d.type === "couple" || d.type === "race");
-        } else if (act.distanceKm >= 3) {
-          targetDay = week.days.find(d => (d.type === "quality" || d.type === "easy") && !matchedMap[d.id]);
-        }
-
-        if (targetDay && !matchedMap[targetDay.id]) {
-          matchedMap[targetDay.id] = {
-            id: act.id,
-            name: act.name,
-            distanceKm: act.distanceKm,
-            avgPace: act.avgPace,
-            avgHR: act.avgHR,
-            date: act.date
-          };
-          setWorkoutChecked(targetDay.id, true, "wife");
-          newMatchCount++;
+    if (targetRunner === "tj") {
+      if (act.distanceKm >= 9) {
+        // Long run (Day 3)
+        targetDay = week.days.find(d => (d.type === "long" || d.type === "race" || d.type === "couple") && !matchedMap[d.id]);
+      } else if (act.distanceKm >= 3.5) {
+        // Quality or Easy run (Day 1 or Day 2)
+        targetDay = week.days.find(d => d.type === "quality" && !matchedMap[d.id]);
+        if (!targetDay) {
+          targetDay = week.days.find(d => d.type === "easy" && !matchedMap[d.id]);
         }
       }
-    });
+    } else {
+      // Wife's plan
+      if (act.distanceKm >= 7) {
+        targetDay = week.days.find(d => (d.type === "couple" || d.type === "race" || d.type === "long") && !matchedMap[d.id]);
+      } else if (act.distanceKm >= 3) {
+        targetDay = week.days.find(d => (d.type === "quality" || d.type === "easy") && !matchedMap[d.id]);
+      }
+    }
+
+    if (targetDay && !matchedMap[targetDay.id]) {
+      matchedMap[targetDay.id] = {
+        id: act.id,
+        name: act.name,
+        distanceKm: act.distanceKm,
+        avgPace: act.avgPace,
+        avgHR: act.avgHR,
+        date: act.date
+      };
+      setWorkoutChecked(targetDay.id, true, targetRunner);
+      newMatchCount++;
+    }
   });
 
   setMatchedMap(matchedMap);
   return newMatchCount;
 }
+
+// Recalibrate and clean erroneous legacy matches
+function recalibrateStravaMatches() {
+  const rawActivities = localStorage.getItem(STRAVA_STORAGE.ACTIVITIES);
+  if (!rawActivities) return 0;
+
+  let runs = [];
+  try {
+    runs = JSON.parse(rawActivities);
+  } catch (e) {
+    return 0;
+  }
+
+  // Clear previous auto-checked items from matchedMap
+  const oldMatchedMap = getMatchedMap();
+  const tjChecked = getCheckedWorkouts("tj");
+  const wifeChecked = getCheckedWorkouts("wife");
+
+  Object.keys(oldMatchedMap).forEach(dayId => {
+    if (dayId.startsWith("wife-")) {
+      delete wifeChecked[dayId];
+    } else {
+      delete tjChecked[dayId];
+    }
+  });
+
+  try {
+    localStorage.setItem(STORAGE_KEY_TJ, JSON.stringify(tjChecked));
+    localStorage.setItem(STORAGE_KEY_WIFE, JSON.stringify(wifeChecked));
+    localStorage.removeItem(STORAGE_KEY_MATCHED);
+  } catch (e) {}
+
+  // Re-run matching with clean strict logic
+  const matchCount = matchStravaActivitiesToWorkouts(runs);
+
+  // Refresh UI
+  renderStage("stage1", "stage1-container");
+  renderStage("stage2", "stage2-container");
+  renderStage("stage3", "stage3-container");
+  renderWifePlan();
+  updateStravaUIStatus();
+  updateCurrentWeekButton();
+  return matchCount;
+}
+window.recalibrateStravaMatches = recalibrateStravaMatches;
+
+window.toggleStravaTargetRunner = function() {
+  const current = localStorage.getItem("strava_sync_target_runner") || "tj";
+  const next = current === "wife" ? "tj" : "wife";
+  localStorage.setItem("strava_sync_target_runner", next);
+  recalibrateStravaMatches();
+  updateStravaUIStatus();
+  showToast(`已切換 Strava 連動目標為：${next === 'wife' ? '🏃‍♀️ 老婆的課表' : '🏃‍♂️ TJ 的課表'}，並已重新精準配對！`);
+};
 
 // Disconnect Strava
 window.disconnectStrava = function() {
@@ -1452,24 +1580,36 @@ function updateStravaUIStatus() {
     if (activitiesRaw) runsCount = JSON.parse(activitiesRaw).length;
   } catch (e) {}
 
+  const targetRunner = localStorage.getItem("strava_sync_target_runner") || "tj";
+  const runnerLabel = targetRunner === "wife" ? "🏃‍♀️ 老婆專屬 (台北馬 2:30)" : "🏃‍♂️ TJ (跑季三部曲)";
+
   if (token) {
     pill.className = "strava-status-pill connected";
     pill.innerHTML = `● 已連結 Strava (${athlete ? athlete.firstname : "已就緒"})`;
 
     desc.innerHTML = `
-      ✅ <strong>Strava 實時連線中</strong>（支援 Apple Watch / Garmin 跑完自動同步）。
+      ✅ <strong>Strava 實時連線中</strong>（支援 Apple Watch / Garmin 跑完自動同步）。<br>
       ${lastSync ? `最近同步時間：<strong>${lastSync}</strong>（共載入 ${runsCount} 筆跑步紀錄）` : "點擊下方按鈕即可同步最新紀錄！"}
+      <div style="margin-top: 6px; font-size: 0.8rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span>🎯 連動目標：<strong style="color: #fff;">${runnerLabel}</strong></span>
+        <button class="btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem;" onclick="toggleStravaTargetRunner()">
+          切換至 ${targetRunner === 'wife' ? 'TJ' : '老婆'}
+        </button>
+      </div>
     `;
 
     actions.innerHTML = `
       <button class="btn-strava btn-sm" onclick="syncStravaActivities(true)">
         🔄 立即同步最新活動
       </button>
+      <button class="btn-secondary btn-sm" onclick="recalibrateStravaMatches(); showToast('已重新校正所有課表配對！');">
+        🧹 重新校正配對
+      </button>
       <button class="btn-secondary btn-sm" onclick="openActivitiesModal()">
         📋 查看近期跑步 (${runsCount})
       </button>
       <button class="btn-secondary btn-sm" onclick="openAppleWatchGuide()">
-        ⌚ Apple Watch 同步設定
+        ⌚ Apple Watch 設定
       </button>
       <button class="btn-secondary btn-sm" style="color: #fda4af;" onclick="disconnectStrava()">
         ❌ 斷開連線
@@ -1481,6 +1621,9 @@ function updateStravaUIStatus() {
 
     desc.innerHTML = `
       支援 <strong>Apple Watch</strong> 與 Garmin 跑完自動同步！一鍵連線後自動抓取真實跑步數據，並為當週課表<strong>自動配對打勾</strong>。
+      <div style="margin-top: 6px; font-size: 0.8rem; color: #94a3b8;">
+        預設連動目標：<strong>${runnerLabel}</strong>
+      </div>
     `;
 
     actions.innerHTML = `
@@ -2039,6 +2182,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // Restore saved runner state
   const savedRunner = localStorage.getItem(STORAGE_KEY_RUNNER) || "tj";
   switchRunner(savedRunner);
+
+  // Recalibrate and clean legacy wrong matches on upgrade
+  const MATCHER_VERSION = "strava_matcher_v3_fixed";
+  if (localStorage.getItem(MATCHER_VERSION) !== "true") {
+    recalibrateStravaMatches();
+    localStorage.setItem(MATCHER_VERSION, "true");
+  }
+
+  // Update floating current-week button
+  updateCurrentWeekButton();
 
   // Initialize Strava status and check for OAuth redirect code
   updateStravaUIStatus();
