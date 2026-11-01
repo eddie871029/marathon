@@ -5,7 +5,7 @@
 // ==========================================================================
 
 const RACE_DATES = {
-  race1: new Date("2026-10-31T06:00:00+08:00"), // 華航馬拉松
+  race1: new Date("2026-10-31T17:00:00+08:00"), // 華航馬拉松
   race2: new Date("2026-12-20T06:30:00+08:00"), // 台北馬拉松
   race3: new Date("2027-02-21T06:30:00+08:00")  // ASICS 馬拉松
 };
@@ -101,7 +101,7 @@ const TRAINING_DATA = {
         days: [
           { id: "s1-w7-d1", dayName: "Day 1 (週二 10/27)", type: "quality", tag: "配速喚醒", title: "暖身 1K + 3 km 比賽配速跑 (6'30\") + 緩和 1K", dist: "5 km", pace: "6'30\" /km", hr: "Z3 (140-152 bpm)", desc: "喚醒大腦與雙腿對 6'30\" 配速的記憶，出汗即可收工。" },
           { id: "s1-w7-d2", dayName: "Day 2 (週四 10/29)", type: "easy", tag: "賽前慢跑", title: "極慢跑 3 km + 4 趟 50m 開步衝刺", dist: "3.5 km", pace: "7'30\" /km", hr: "Z1 (<130 bpm)", desc: "賽前 48 小時動態喚醒神經，結束後充分伸展與泡熱水澡。" },
-          { id: "s1-w7-d3", dayName: "Day 3 (週六 10/31)", type: "race", tag: "🎉 賽事日", title: "✈️ 華航馬拉松 21.0975 km 半馬正式賽", dist: "21.1 km", pace: "6'24\" ~ 6'38\"", hr: "Z3-Z4", desc: "目標 2:15~2:20 完賽！前 5K 壓在 6'35\" 暖身，15K 穩固巡航，最後 3K 全力開出微笑過線！" }
+          { id: "s1-w7-d3", dayName: "Day 3 (週六 10/31)", type: "race", tag: "🎉 賽事日", title: "✈️ 華航馬拉松 21.0975 km 半馬正式賽", dist: "21.1 km", pace: "6'24\" ~ 6'38\"", hr: "Z3-Z4", desc: "✅ 實際成績：2:25:44（手錶，半馬 PB，較 4/11 進步約 8 分鐘）。前 3K 配速有守住，但心率全程 160~165 接近門檻，14K 後肝醣耗盡掉速。教訓：比賽心率上限要絕對、長跑耐力是第一優先、補給增為 3 包。" }
         ]
       }
     ]
@@ -111,78 +111,78 @@ const TRAINING_DATA = {
     title: "🧑‍🤝‍🧑 第二階段：台北馬拉松陪伴與銜接期",
     targetTime: "夫妻攜手・完賽為主",
     targetPace: "依夫人舒適體感 (約 7'00\" ~ 8'00\" /km)",
-    description: "轉化為全職稱職配速員 (Pacer)，賽事化身為頂級 21K 低心率有氧打底，為二月衝刺累積強健膝踝與心肺！",
+    description: "華航後先恢復一週，之後每週保留 1 次自己的品質課（不跟著減量），週末夫妻長跑對你剛好是 Z2 有氧長跑，正好補強華航暴露的有氧耐力缺口。",
     weeks: [
       {
         id: "w8",
         num: "W8",
         date: "11/02 - 11/08",
-        focus: "華航賽後排酸與大修整",
-        note: "第一週嚴禁任何速度訓練！以排乳酸慢跑、散步與拉筋為主，補充大量蛋白質。",
+        focus: "華航賽後恢復週",
+        note: "華航 (10/31) 實際 2:25:44（半馬 PB），14K 後肝醣耗盡掉速。本週只跑輕鬆跑，不做任何速度課，多補碳水與蛋白質。",
         days: [
-          { id: "s2-w8-d1", dayName: "Day 1 (週三)", type: "easy", tag: "主動修復", title: "4 km 極慢排酸跑 / 快走", dist: "4 km", pace: "7'40\" /km", hr: "Z1 (<125 bpm)", desc: "感受雙腿肌群回血，促進代謝廢物排除。" },
-          { id: "s2-w8-d2", dayName: "Day 2 (週五)", type: "easy", tag: "輕鬆有氧", title: "5 km 輕鬆慢跑", dist: "5 km", pace: "7'15\" /km", hr: "Z2 (125-138 bpm)", desc: "慢跑測試雙腿受損情況，若無痛點即可逐步回歸。" },
-          { id: "s2-w8-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "6 km 夫妻公園輕鬆散步跑", dist: "6 km", pace: "輕鬆舒適", hr: "Z1-Z2", desc: "陪伴老婆慢跑，討論台北馬完賽策略與心理預備。" }
+          { id: "s2-w8-d1", dayName: "Day 1 (週三)", type: "easy", tag: "主動修復", title: "5 km 極輕鬆恢復跑", dist: "5 km", pace: "7'40\" ~ 8'00\" /km", hr: "Z1-Z2 (≤140 bpm)", desc: "只求讓血液流動，腿仍痠就改成快走。" },
+          { id: "s2-w8-d2", dayName: "Day 2 (週五)", type: "easy", tag: "輕鬆有氧", title: "6 km 輕鬆跑 + 4 趟 80m 加速跑", dist: "6 km", pace: "7'20\" ~ 7'50\" /km", hr: "Z2 (≤145 bpm)", desc: "無痛點即可逐步回歸，加速跑以「快而放鬆」為主。" },
+          { id: "s2-w8-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "10 km 夫妻重聚跑", dist: "10 km", pace: "約 7'25\" /km", hr: "Z1-Z2", desc: "配合老婆課表的 10K，對你是很好的 Z2 恢復長跑。" }
         ]
       },
       {
         id: "w9",
         num: "W9",
         date: "11/09 - 11/15",
-        focus: "節奏對齊與基礎重建",
-        note: "週間維持自己一次 5K 節奏跑，週末陪伴夫人長跑。",
+        focus: "恢復品質課・目標配速",
+        note: "重新開始每週 1 次品質課。比賽配速跑以心率為上限，不要追配速。",
         days: [
-          { id: "s2-w9-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "個人維持", title: "暖身 + 5 km 輕快節奏跑 (6'20\") + 緩和", dist: "7 km", pace: "6'20\" /km", hr: "Z3", desc: "保持自己的心肺刺激與腿部彈性。" },
-          { id: "s2-w9-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆陪跑", title: "5 km 陪伴輕鬆跑", dist: "5 km", pace: "老婆配速", hr: "Z2", desc: "練習兩人並排跑步默契與穩定步頻。" },
-          { id: "s2-w9-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "10 km 夫妻週末耐力巡航", dist: "10 km", pace: "7'15\" ~ 7'45\" /km", hr: "Z2 (低心率)", desc: "給老婆信心！每 3 公里停下喝一口水，練習穩速巡航。" }
+          { id: "s2-w9-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "比賽配速", title: "暖身 1.5K + 5 km 目標配速跑 (6'20\" ~ 6'25\") + 緩和 1K", dist: "7.5 km", pace: "6'20\" ~ 6'25\" /km", hr: "Z3 (≤158 bpm)", desc: "心率超過 158 就放慢，配速讓給心率決定。暖身一定要做足。" },
+          { id: "s2-w9-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "6 km Z2 輕鬆跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "選平坦路線，壓不住心率就走跑交替。" },
+          { id: "s2-w9-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "13 km 夫妻長距離突破跑", dist: "13 km", pace: "約 7'25\" /km", hr: "Z2 (≤148 bpm)", desc: "配合老婆課表 13K，練習並排默契與水站節奏。" }
         ]
       },
       {
         id: "w10",
         num: "W10",
         date: "11/16 - 11/22",
-        focus: "心肺門檻維持 + 週末 12K",
-        note: "你的心率在此階段會非常低（幾乎全是 Z1-Z2），能極佳地建構粒線體密度。",
+        focus: "門檻跑啟動",
+        note: "引入門檻 (T) 間歇。門檻配速暫定 6'00\"~6'10\"，W16 實測後再校正。",
         days: [
-          { id: "s2-w10-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "個人門檻", title: "暖身 + 5 km T 門檻跑 (6'10\") + 緩和", dist: "7 km", pace: "6'10\" /km", hr: "Z4", desc: "維持高門檻刺激，避免二月時速耐力生疏。" },
-          { id: "s2-w10-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆跑", title: "6 km 輕鬆跑", dist: "6 km", pace: "7'00\" /km", hr: "Z2", desc: "流暢排汗，保持活力。" },
-          { id: "s2-w10-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "12 km 夫妻耐力長跑", dist: "12 km", pace: "7'20\" ~ 7'50\" /km", hr: "Z2", desc: "完成 12 公里，讓老婆習慣 90 分鐘以上的雙腿負重感。" }
+          { id: "s2-w10-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "門檻跑", title: "暖身 2K + 2 × 2.5 km T 門檻跑 (6'00\" ~ 6'10\")，間休 2 分鐘慢跑 + 緩和 1K", dist: "8.5 km", pace: "6'00\" ~ 6'10\" /km", hr: "Z3-Z4 (160-168 bpm)", desc: "「吃力但可控制」，只能講幾個字。第 1 公里不要衝。" },
+          { id: "s2-w10-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "6 km Z2 輕鬆跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "深層放鬆，代謝門檻跑的疲勞。" },
+          { id: "s2-w10-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "14 km 夫妻台北馬全流程模擬", dist: "14 km", pace: "約 7'20\" /km", hr: "Z2 (≤148 bpm)", desc: "模擬水站進站與補膠節奏。" }
         ]
       },
       {
         id: "w11",
         num: "W11",
         date: "11/23 - 11/29",
-        focus: "台北馬前關鍵長跑 (14K)",
-        note: "台北馬賽前最長距離長跑！進行全面賽事補給流程模擬。",
+        focus: "速耐力：1.2K 間歇",
+        note: "長間歇練速耐力，為 2:10 目標鋪路。老婆本週迎來 15K 高峰長跑。",
         days: [
-          { id: "s2-w11-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "個人節奏", title: "暖身 + 6 km 節奏跑 (6'15\") + 緩和", dist: "8 km", pace: "6'15\" /km", hr: "Z3-Z4", desc: "維持自己良好節奏感受。" },
-          { id: "s2-w11-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "陪跑", title: "5 km 陪伴輕鬆跑", dist: "5 km", pace: "老婆配速", hr: "Z2", desc: "調整跑姿，提醒夫人肩膀放鬆、手臂自然擺動。" },
-          { id: "s2-w11-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "14 km 夫妻台北馬模擬長跑", dist: "14 km", pace: "7'20\" ~ 7'50\" /km", hr: "Z2", desc: "實戰模擬！隨身攜帶能量膠，第 5K、10K 模擬水站進站與補膠節奏。" }
+          { id: "s2-w11-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "長間歇", title: "暖身 2K + 4 × 1.2 km (5'35\" ~ 5'40\")，間休 2 分鐘慢跑 + 緩和 1K", dist: "8.5 km", pace: "5'35\" ~ 5'40\" /km", hr: "Z4 (164-175 bpm)", desc: "每趟約 6'45\"，四趟配速要平均，最後一趟不要衝刺。" },
+          { id: "s2-w11-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "6 km Z2 輕鬆跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "調整呼吸，充足睡眠。" },
+          { id: "s2-w11-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "15 km 夫妻高峰長跑 (補給演練)", dist: "15 km", pace: "約 7'20\" /km", hr: "Z2 (≤148 bpm)", desc: "老婆的巔峰驗收。你順便練習吃 2 包能量膠的腸胃適應。" }
         ]
       },
       {
         id: "w12",
         num: "W12",
         date: "11/30 - 12/06",
-        focus: "台北馬倒數兩週減量",
-        note: "長距離開始縮短，重點在消除累積疲勞與建立心理信心。",
+        focus: "老婆減量・你不減量",
+        note: "陪跑對你強度很低，不需要跟著減量。週末夫妻跑完自己續跑，維持長跑距離。",
         days: [
-          { id: "s2-w12-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "輕快跑", title: "5 km 輕鬆輕快跑 (6'30\")", dist: "5 km", pace: "6'30\" /km", hr: "Z3", desc: "適度流汗即可。" },
-          { id: "s2-w12-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "陪跑", title: "5 km 陪伴慢跑", dist: "5 km", pace: "老婆配速", hr: "Z1-Z2", desc: "放鬆雙腿。" },
-          { id: "s2-w12-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "10 km 夫妻輕鬆減量長跑", dist: "10 km", pace: "7'30\" /km", hr: "Z2", desc: "順暢跑完 10K，賽前兩週減量到位。" }
+          { id: "s2-w12-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "門檻跑", title: "暖身 1.5K + 6 km 連續門檻跑 (6'05\" ~ 6'10\") + 緩和 1K", dist: "8.5 km", pace: "6'05\" ~ 6'10\" /km", hr: "Z3-Z4 (160-168 bpm)", desc: "連續 6K 定速，練習在門檻附近的配速自律。" },
+          { id: "s2-w12-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "6 km Z2 輕鬆跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "平穩有氧。" },
+          { id: "s2-w12-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 同跑 + 續跑", title: "10 km 夫妻減量跑 + 自己續跑 4 km Z2", dist: "14 km", pace: "7'20\" ~ 7'40\" /km", hr: "Z2 (≤148 bpm)", desc: "陪老婆完成 10K 後，自己再跑 4K，維持長跑量。" }
         ]
       },
       {
         id: "w13",
         num: "W13",
         date: "12/07 - 12/13",
-        focus: "賽前一週調整與防寒",
-        note: "12 月中旬台北天氣偏冷，注意保暖防感冒，準備雨備裝備（拋棄式輕便雨衣）。",
+        focus: "目標配速維持",
+        note: "台北 12 月中旬偏冷，注意保暖防感冒，準備拋棄式雨衣。",
         days: [
-          { id: "s2-w13-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "動態跑", title: "4 km 暖身慢跑", dist: "4 km", pace: "6'30\" /km", hr: "Z2", desc: "維持神經靈敏度。" },
-          { id: "s2-w13-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "陪跑", title: "4 km 夫妻舒壓慢跑", dist: "4 km", pace: "輕鬆舒適", hr: "Z1", desc: "互相給予正向肯定與鼓勵。" },
-          { id: "s2-w13-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 夫妻同跑", title: "6 km 輕鬆慢跑熱身", dist: "6 km", pace: "7'30\" /km", hr: "Z1-Z2", desc: "賽前一週收心跑，檢查參賽號碼布與晶片綁定。" }
+          { id: "s2-w13-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "比賽配速", title: "暖身 1.5K + 6 km 目標配速跑 (6'15\" ~ 6'20\") + 緩和 1K", dist: "8.5 km", pace: "6'15\" ~ 6'20\" /km", hr: "Z3 (≤158 bpm)", desc: "天氣轉涼，觀察同配速心率是否比秋天低。" },
+          { id: "s2-w13-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "5 km Z2 輕鬆跑 + 4 趟加速跑", dist: "5 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "維持雙腿靈活。" },
+          { id: "s2-w13-d3", dayName: "Day 3 (週末)", type: "couple", tag: "💑 同跑 + 續跑", title: "6 km 夫妻賽前熱身跑 + 自己續跑 6 km Z2", dist: "12 km", pace: "7'20\" ~ 7'40\" /km", hr: "Z2 (≤148 bpm)", desc: "老婆收心跑，你自己補足 12K。" }
         ]
       },
       {
@@ -190,11 +190,11 @@ const TRAINING_DATA = {
         num: "W14",
         date: "12/14 - 12/20",
         focus: "台北馬拉松嘉年華週",
-        note: "全職 Pacer 上陣！擋風、拿水、倒數公里數，幸福完賽！",
+        note: "全職 Pacer 上陣！擋風、拿水、倒數公里數。對你而言是一次 21K 的 Z1-Z2 長跑。",
         days: [
-          { id: "s2-w14-d1", dayName: "Day 1 (週二 12/15)", type: "easy", tag: "賽前活動", title: "3 km 輕鬆慢跑 + 3趟開步跑", dist: "3.5 km", pace: "7'00\" /km", hr: "Z1", desc: "開動關節，避免身體過度生鏽。" },
+          { id: "s2-w14-d1", dayName: "Day 1 (週二 12/15)", type: "easy", tag: "賽前活動", title: "5 km 輕鬆跑 + 4 趟加速跑", dist: "5 km", pace: "7'20\" /km", hr: "Z2", desc: "開動關節，避免身體生鏽。" },
           { id: "s2-w14-d2", dayName: "Day 2 (週五 12/18)", type: "easy", tag: "牽手散步", title: "夫妻 20 分鐘公園輕鬆散步與伸展", dist: "2 km", pace: "散步", hr: "Rest", desc: "充分睡眠，晚間整理路跑衣物、號碼布、能量膠。" },
-          { id: "s2-w14-d3", dayName: "Day 3 (週日 12/20)", type: "race", tag: "🏅 賽事日", title: "🏅 台北馬拉松 21.0975 km (夫妻攜手完賽)", dist: "21.1 km", pace: "依老婆配速", hr: "Z2 歡樂巡航", desc: "稱職配速員出擊！擋風、遞水、給予情緒價值，牽手衝過台北市政府終點線！" }
+          { id: "s2-w14-d3", dayName: "Day 3 (週日 12/20)", type: "race", tag: "🏅 賽事日", title: "🏅 台北馬拉松 21.0975 km (夫妻攜手完賽)", dist: "21.1 km", pace: "依老婆配速", hr: "Z1-Z2 歡樂巡航", desc: "稱職配速員出擊！擋風、遞水、給予情緒價值，牽手衝過終點線！" }
         ]
       }
     ]
@@ -203,55 +203,55 @@ const TRAINING_DATA = {
   stage3: {
     title: "🚀 第三階段：ASICS 馬拉松巔峰衝刺期",
     targetTime: "2:10:00 (個人 PB)",
-    targetPace: "6'09\" ~ 6'10\" /km",
-    description: "經過華航與台北馬兩場 21K 扎實洗禮，下肢韌帶已無堅不摧！這 9 週專注於「速耐力升級」，直攻 2:10 大關！",
+    targetPace: "6'09\" ~ 6'10\" /km（比賽配速依 W16、W17 測驗結果最終決定）",
+    description: "目標 2:10 需要再進步約 7%，重點是補強有氧耐力：每週一次確實的 Z2 長跑（逐步拉到 18K）、門檻跑把 T 配速往前推、長跑練習吃 3 包能量膠。W16 門檻測驗與 W17 自主半馬測驗後，再決定 ASICS 的比賽配速。",
     weeks: [
       {
         id: "w15",
         num: "W15",
         date: "12/21 - 12/27",
-        focus: "台北馬後快速轉軌",
-        note: "由於台北馬心率控制良好無肌肉微撕裂，本週迅速恢復，重整旗鼓迎接 2:10 備戰！",
+        focus: "台北馬後恢復",
+        note: "陪跑強度低，恢復很快。本週只跑輕鬆跑，準備進入衝刺期。",
         days: [
-          { id: "s3-w15-d1", dayName: "Day 1 (週三)", type: "easy", tag: "恢復慢跑", title: "5 km 輕鬆排酸跑 (7'00\")", dist: "5 km", pace: "7'00\" /km", hr: "Z1-Z2", desc: "確認膝蓋與腳踝無任何不適。" },
-          { id: "s3-w15-d2", dayName: "Day 2 (週五)", type: "easy", tag: "基礎有氧", title: "6 km 輕鬆有氧跑 (6'50\")", dist: "6 km", pace: "6'50\" /km", hr: "Z2", desc: "體能恢復極佳，步頻回升。" },
-          { id: "s3-w15-d3", dayName: "Day 3 (週末)", type: "long", tag: "耐力維持", title: "8 km 輕鬆長跑 (6'45\")", dist: "8 km", pace: "6'45\" /km", hr: "Z2", desc: "銜接期長跑，身心保持高度飢餓感。" }
+          { id: "s3-w15-d1", dayName: "Day 1 (週三)", type: "easy", tag: "恢復慢跑", title: "5 km 輕鬆恢復跑", dist: "5 km", pace: "7'30\" ~ 8'00\" /km", hr: "Z1-Z2 (≤140 bpm)", desc: "確認膝蓋與腳踝無任何不適。" },
+          { id: "s3-w15-d2", dayName: "Day 2 (週五)", type: "easy", tag: "基礎有氧", title: "6 km Z2 輕鬆跑 + 4 趟加速跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "步頻回升，保持雙腿靈活。" },
+          { id: "s3-w15-d3", dayName: "Day 3 (週末)", type: "long", tag: "耐力維持", title: "10 km Z2 長跑", dist: "10 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "選新竹河濱等平坦路線。" }
         ]
       },
       {
         id: "w16",
         num: "W16",
         date: "12/28 - 01/03",
-        focus: "2:10 目標配速啟動",
-        note: "跨年週！正式將目標配速校準至 6'10\"/km，進入強化期。",
+        focus: "30 分鐘門檻測驗",
+        note: "用實測結果校正 T 配速與心率區間，後面的課表配速都以此為準。",
         days: [
-          { id: "s3-w16-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "目標節奏", title: "暖身 1.5K + 5 km 目標配速跑 (6'10\") + 緩和 1.5K", dist: "8 km", pace: "6'10\" /km", hr: "Z3-Z4", desc: "跨入 6'10\" 領域，專注核心收緊與下背推進感受。" },
-          { id: "s3-w16-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "E 區間有氧慢跑 6 km", dist: "6 km", pace: "7'00\" /km", hr: "Z2", desc: "深層放鬆，補充水分。" },
-          { id: "s3-w16-d3", dayName: "Day 3 (週末)", type: "long", tag: "週末長跑", title: "LSD 週末耐力長跑 13 km (6'50\")", dist: "13 km", pace: "6'50\" /km", hr: "Z2-Z3", desc: "新年第一跑！配速比上一階段長跑提速 15 秒，建立耐力信心。" }
+          { id: "s3-w16-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "🧪 門檻測驗", title: "暖身 15 分鐘 + 加速跑 → 30 分鐘全力均速跑 → 緩和 10 分鐘", dist: "約 9 km", pace: "全力但均速", hr: "記錄後 20 分鐘平均心率", desc: "後 20 分鐘的平均心率 = 門檻心率，平均配速 ≈ 門檻配速。選平坦路線、避開悶熱夜晚，前 5 分鐘不要衝。" },
+          { id: "s3-w16-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "6 km Z2 輕鬆跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "跨年週，深層放鬆。" },
+          { id: "s3-w16-d3", dayName: "Day 3 (週末)", type: "long", tag: "週末長跑", title: "14 km Z2 長跑 (吃 1 包能量膠)", dist: "14 km", pace: "7'20\" ~ 7'50\" /km", hr: "Z2 (≤148 bpm)", desc: "新年第一跑！長跑嚴守 Z2，最後 20 分鐘心率漂到 150 可接受。" }
         ]
       },
       {
         id: "w17",
         num: "W17",
         date: "01/04 - 01/10",
-        focus: "T 門檻拉抬 (5'50\")",
-        note: "以 5'50\" 的 T 配速衝擊乳酸門檻，讓未來的 6'10\" 變得無比輕鬆！",
+        focus: "自主半馬測驗",
+        note: "高雄馬報名已截止，改在新竹河濱自主跑一次半馬計時，驗證耐力、補給與配速策略。",
         days: [
-          { id: "s3-w17-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "關鍵門檻", title: "暖身 2K + 4 km T 門檻跑 (5'50\") + 緩和 1.5K", dist: "7.5 km", pace: "5'50\" /km", hr: "Z4 (162-172 bpm)", desc: "提升乳酸拐點！這 4 公里很吃力但能讓你產生質的飛躍。" },
-          { id: "s3-w17-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "E 區間有氧慢跑 7 km", dist: "7 km", pace: "6'50\" /km", hr: "Z2", desc: "徹底修復，多做腿後肌群伸展。" },
-          { id: "s3-w17-d3", dayName: "Day 3 (週末)", type: "long", tag: "漸進長跑", title: "漸進長跑 15 km (後 3K 推進至 6'15\")", dist: "15 km", pace: "6'45\" ➔ 6'15\"", hr: "Z2 ➔ Z3", desc: "後段加溫跑，模擬賽事後半程超越他人的心理優勢。" }
+          { id: "s3-w17-d1", dayName: "Day 1 (週二)", type: "quality", tag: "配速喚醒", title: "暖身 1.5K + 4 km 目標配速跑 (6'15\") + 緩和 1K", dist: "6.5 km", pace: "6'15\" /km", hr: "Z3 (≤158 bpm)", desc: "測驗前的小減量，出汗即可。" },
+          { id: "s3-w17-d2", dayName: "Day 2 (週四)", type: "easy", tag: "賽前開腿", title: "4 km 輕鬆跑 + 4 趟加速跑", dist: "4 km", pace: "7'30\" /km", hr: "Z1-Z2", desc: "保持神經靈活，前一晚睡飽。" },
+          { id: "s3-w17-d3", dayName: "Day 3 (週六/日 1/9-10)", type: "race", tag: "🧪 半馬測驗", title: "自主半馬計時 21.1 km (新竹河濱)", dist: "21.1 km", pace: "前 3K 6'25\" → 依心率", hr: "3-16K ≤160，16K 後放開", desc: "照比賽方式執行：暖身做足、吃 3 包能量膠 (約 40 分、1 小時 20 分、1 小時 50 分)。成績決定 ASICS 比賽配速：≤2:15 → 挑戰 2:10；2:15~2:18 → 目標 2:12~2:13；>2:18 → 目標 2:15。" }
         ]
       },
       {
         id: "w18",
         num: "W18",
         date: "01/11 - 01/17",
-        focus: "速耐力抗衰力建構",
-        note: "T 門檻延長至 5 公里，長跑推進至 17 公里。",
+        focus: "測驗後恢復 + 門檻跑",
+        note: "測驗後先跑輕鬆跑，週中再做門檻跑。配速改用 W16 實測的 T 配速。",
         days: [
-          { id: "s3-w18-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "關鍵門檻", title: "暖身 2K + 5 km T 門檻跑 (5'50\") + 緩和 1.5K", dist: "8.5 km", pace: "5'50\" /km", hr: "Z4 (162-172 bpm)", desc: "強化 5'50\" 耐受時間，步頻維持 180 spm。" },
-          { id: "s3-w18-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "E 區間有氧慢跑 7 km", dist: "7 km", pace: "6'50\" /km", hr: "Z2", desc: "調整呼吸，充足睡眠。" },
-          { id: "s3-w18-d3", dayName: "Day 3 (週末)", type: "long", tag: "硬核長跑", title: "LSD 硬核長跑 17 km (6'45\")", dist: "17 km", pace: "6'45\" /km", hr: "Z2-Z3", desc: "距離賽事倒數 5 週，全馬力抗衰竭訓練，實測能量膠補給。" }
+          { id: "s3-w18-d1", dayName: "Day 1 (週二/三)", type: "easy", tag: "恢復跑", title: "6 km Z2 輕鬆跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "半馬測驗後的恢復。" },
+          { id: "s3-w18-d2", dayName: "Day 2 (週四/五)", type: "quality", tag: "門檻跑", title: "暖身 2K + 2 × 3 km T 門檻跑，間休 2 分鐘慢跑 + 緩和 1K", dist: "9 km", pace: "W16 實測 T 配速", hr: "門檻心率 ±3", desc: "強化 T 配速的耐受時間，步頻維持 175~180 spm。" },
+          { id: "s3-w18-d3", dayName: "Day 3 (週末)", type: "long", tag: "週末長跑", title: "14 km Z2 長跑 (練習 2 包能量膠)", dist: "14 km", pace: "7'15\" ~ 7'45\" /km", hr: "Z2 (≤148 bpm)", desc: "測驗後的長跑不拉距離，專注 Z2。" }
         ]
       },
       {
@@ -259,59 +259,59 @@ const TRAINING_DATA = {
         num: "W19",
         date: "01/18 - 01/24",
         focus: "全季最高峰週 (The Ultimate Peak)",
-        note: "本賽季最關鍵的強度檢驗週！完成此週，2:10 囊中之物！",
+        note: "本季最長、最關鍵的一週。長跑末段只跑 3K 比賽配速，避免疲勞過度累積。",
         days: [
-          { id: "s3-w19-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "專項實測", title: "暖身 1.5K + 8 km 目標配速跑 (6'10\") + 緩和 1.5K", dist: "11 km", pace: "6'10\" /km", hr: "Z3-Z4", desc: "整整 8 公里完美定速 6'10\"！體驗比賽中段巡航的肌肉自律。" },
-          { id: "s3-w19-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "E 區間有氧慢跑 6 km", dist: "6 km", pace: "7'00\" /km", hr: "Z2", desc: "低強度排酸。" },
-          { id: "s3-w19-d3", dayName: "Day 3 (週末)", type: "long", tag: "頂峰長跑", title: "18 km 頂峰長跑 (含最後 5K 6'10\" 模擬衝刺)", dist: "18 km", pace: "6'45\" + 末5K 6'10\"", hr: "Z2-Z4", desc: "本賽季最長里程！最後 5 公里在疲勞狀態下切入賽事配速，淬鍊鋼鐵心智！" }
+          { id: "s3-w19-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "速度刺激", title: "暖身 2K + 8 × 400m (1'56\" ~ 2'00\")，間休 90 秒慢跑 + 緩和 1K", dist: "7 km", pace: "4'50\" ~ 5'00\" /km", hr: "Z4-Z5", desc: "暖身至少 10 分鐘。若前一週疲勞未消，減為 6 趟。" },
+          { id: "s3-w19-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "6 km Z2 輕鬆跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "低強度恢復。" },
+          { id: "s3-w19-d3", dayName: "Day 3 (週末)", type: "long", tag: "頂峰長跑", title: "18 km 頂峰長跑 (前 15K Z2 + 末 3K 比賽配速)", dist: "18 km", pace: "7'15\" + 末3K 6'10\" ~ 6'15\"", hr: "Z2 → Z3", desc: "本季最長里程！吃 3 包能量膠完整演練，最後 3K 在疲勞狀態下切入比賽配速。" }
         ]
       },
       {
         id: "w20",
         num: "W20",
         date: "01/25 - 01/31",
-        focus: "農曆春節・防怠惰維持專案",
-        note: "過年期間聚餐多，維持每週 3 次跑步，防腹脹、維持心肺活絡即可，不堆過量疲勞。",
+        focus: "專項配速週",
+        note: "原春節前的專項課提前到本週（2027 除夕為 2/5，春節連假 2/4~2/10 落在 W21~W22）。",
         days: [
-          { id: "s3-w20-d1", dayName: "Day 1 (小年夜/除夕)", type: "quality", tag: "新春快跑", title: "暖身 1.5K + 4 km T 跑 (5'50\") + 緩和", dist: "7 km", pace: "5'50\" /km", hr: "Z4", desc: "春節前夕保持高心肺爆發力。" },
-          { id: "s3-w20-d2", dayName: "Day 2 (初二/初三)", type: "easy", tag: "消脂慢跑", title: "6 km 賀歲輕鬆跑", dist: "6 km", pace: "6'55\" /km", hr: "Z2", desc: "消化過年大餐熱量，呼吸新鮮空氣。" },
-          { id: "s3-w20-d3", dayName: "Day 3 (初五/初六)", type: "long", tag: "春節長跑", title: "12 km 穩健中長跑 (6'35\")", dist: "12 km", pace: "6'35\" /km", hr: "Z2-Z3", desc: "過年收假前長跑，確保下肢肌力不因放假休眠。" }
+          { id: "s3-w20-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "目標節奏", title: "暖身 1.5K + 8 km 比賽配速跑 (6'10\" ~ 6'15\") + 緩和 1K", dist: "10.5 km", pace: "6'10\" ~ 6'15\" /km", hr: "Z3 (≤160 bpm)", desc: "最關鍵的專項課：8K 定速，觀察心率是否穩定在 160 以下。" },
+          { id: "s3-w20-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆有氧", title: "6 km Z2 輕鬆跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "深層放鬆，補充水分。" },
+          { id: "s3-w20-d3", dayName: "Day 3 (週末)", type: "long", tag: "最後長跑", title: "16 km Z2 長跑 (3 包能量膠)", dist: "16 km", pace: "7'15\" ~ 7'45\" /km", hr: "Z2 (≤148 bpm)", desc: "賽前最後一趟長跑，隨後進入春節維持與減量期。" }
         ]
       },
       {
         id: "w21",
         num: "W21",
         date: "02/01 - 02/07",
-        focus: "收假定型跑",
-        note: "春節收假，賽事倒數 2 週前最後一次 14K 中長距離，找回戰鬥狀態。",
+        focus: "農曆春節・防怠惰維持",
+        note: "春節連假 2/4 起。過年聚餐多，維持每週 3 跑即可，不堆疊疲勞。",
         days: [
-          { id: "s3-w21-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "目標節奏", title: "暖身 1.5K + 6 km 目標配速跑 (6'10\") + 緩和", dist: "9 km", pace: "6'10\" /km", hr: "Z3-Z4", desc: "校準 6'10\" 步頻與腳步落地輕盈度。" },
-          { id: "s3-w21-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆慢跑", title: "5 km 輕鬆跑", dist: "5 km", pace: "7'00\" /km", hr: "Z2", desc: "平順節奏。" },
-          { id: "s3-w21-d3", dayName: "Day 3 (週末)", type: "long", tag: "最後長跑", title: "14 km 賽事節奏模擬長跑 (6'30\")", dist: "14 km", pace: "6'30\" /km", hr: "Z3", desc: "最後一趟中長跑，隨後正式進入賽前兩週減量期。" }
+          { id: "s3-w21-d1", dayName: "Day 1 (週二 2/2)", type: "quality", tag: "長間歇", title: "暖身 2K + 4 × 1.2 km (5'35\" ~ 5'40\")，間休 2 分鐘慢跑 + 緩和 1K", dist: "8.5 km", pace: "5'35\" ~ 5'40\" /km", hr: "Z4", desc: "連假前最後一次高強度，維持速耐力。" },
+          { id: "s3-w21-d2", dayName: "Day 2 (除夕/初一前後)", type: "easy", tag: "賀歲慢跑", title: "6 km 輕鬆跑 + 4 趟加速跑", dist: "6 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z2 (≤148 bpm)", desc: "消化過年大餐，呼吸新鮮空氣。" },
+          { id: "s3-w21-d3", dayName: "Day 3 (初二/初三)", type: "long", tag: "春節長跑", title: "12 km Z2 中長跑", dist: "12 km", pace: "7'15\" ~ 7'45\" /km", hr: "Z2 (≤148 bpm)", desc: "確保下肢肌力不因放假休眠。" }
         ]
       },
       {
         id: "w22",
         num: "W22",
         date: "02/08 - 02/14",
-        focus: "賽前 2 週黃金減量 (Tapering)",
-        note: "總跑量縮減 35%，維持速度刺激，讓肌肉微損傷完全修復超量補償。",
+        focus: "賽前 2 週減量 (Tapering)",
+        note: "春節連假到 2/10。總跑量縮減約 35%，保留比賽配速刺激。",
         days: [
-          { id: "s3-w22-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "速度維持", title: "暖身 1.5K + 4 km 輕快跑 (6'00\") + 緩和", dist: "6.5 km", pace: "6'00\" /km", hr: "Z3-Z4", desc: "距離短、節奏快，維持神經敏感度。" },
-          { id: "s3-w22-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆跑", title: "5 km 輕鬆慢跑", dist: "5 km", pace: "7'10\" /km", hr: "Z1-Z2", desc: "放鬆小腿與比目魚肌。" },
-          { id: "s3-w22-d3", dayName: "Day 3 (週末)", type: "long", tag: "減量長跑", title: "10 km 輕鬆收工跑 (6'40\")", dist: "10 km", pace: "6'40\" /km", hr: "Z2", desc: "嚴格控制在 10K，跑完大腿應當輕盈如燕！" }
+          { id: "s3-w22-d1", dayName: "Day 1 (週二/三)", type: "quality", tag: "配速維持", title: "暖身 1.5K + 4 km 比賽配速跑 + 緩和 1K", dist: "6.5 km", pace: "比賽配速 (依 W17 決定)", hr: "Z3", desc: "距離短、節奏明快，維持神經敏感度。" },
+          { id: "s3-w22-d2", dayName: "Day 2 (週四/五)", type: "easy", tag: "輕鬆跑", title: "5 km Z2 輕鬆跑", dist: "5 km", pace: "7'20\" ~ 8'00\" /km", hr: "Z1-Z2", desc: "放鬆小腿與比目魚肌。" },
+          { id: "s3-w22-d3", dayName: "Day 3 (週末)", type: "long", tag: "減量長跑", title: "10 km 輕鬆跑 (最後 2K 比賽配速)", dist: "10 km", pace: "7'20\" + 末2K 比賽配速", hr: "Z2 → Z3", desc: "嚴格控制在 10K，跑完應覺得意猶未盡。" }
         ]
       },
       {
         id: "w23",
         num: "W23",
         date: "02/15 - 02/21",
-        focus: "ASICS 賽事週・衝刺 2:10 PB！",
-        note: "年度終極大考！前兩天肝醣超補、充足睡眠、做好保暖與心態準備，直攻 2:10！",
+        focus: "ASICS 賽事週・衝刺 PB！",
+        note: "賽前 2 天多吃碳水、睡飽、做好保暖。比賽心率上限依 W17 測驗的實際數據設定。",
         days: [
-          { id: "s3-w23-d1", dayName: "Day 1 (週二 02/16)", type: "quality", tag: "配速喚醒", title: "暖身 1K + 3 km 比賽配速跑 (6'10\") + 緩和 1K", dist: "5 km", pace: "6'10\" /km", hr: "Z3", desc: "大腦再次複習 6'10\" 節奏，出汗即止。" },
-          { id: "s3-w23-d2", dayName: "Day 2 (週四 02/18)", type: "easy", tag: "賽前開腿", title: "3 km 極慢跑 + 3 趟 60m 輕快衝刺 (Strides)", dist: "3.5 km", pace: "7'20\" /km", hr: "Z1", desc: "開動神經傳導，賽前 48 小時徹底儲備能量。" },
-          { id: "s3-w23-d3", dayName: "Day 3 (週日 02/21)", type: "race", tag: "🔥 巔峰決戰", title: "👟 ASICS 馬拉松 21.0975 km (挑戰 2:10:00 PB！)", dist: "21.1 km", pace: "6'09\" ~ 6'10\"", hr: "Z3-Z4 巔峰輸出", desc: "歷史巔峰時刻！均速鎖定 6'10\"/km，18K 咬住不放，終點打卡 2:10:00 新個人紀錄！" }
+          { id: "s3-w23-d1", dayName: "Day 1 (週二 02/16)", type: "quality", tag: "配速喚醒", title: "暖身 1K + 3 km 比賽配速跑 + 緩和 1K", dist: "5 km", pace: "比賽配速", hr: "Z3", desc: "大腦再次複習比賽節奏，出汗即止。" },
+          { id: "s3-w23-d2", dayName: "Day 2 (週四 02/18)", type: "easy", tag: "賽前開腿", title: "3 km 極慢跑 + 4 趟 60m 加速跑", dist: "3.5 km", pace: "7'30\" /km", hr: "Z1", desc: "賽前 48 小時徹底儲備能量。" },
+          { id: "s3-w23-d3", dayName: "Day 3 (週日 02/21)", type: "race", tag: "🔥 巔峰決戰", title: "👟 ASICS 馬拉松 21.0975 km (挑戰 2:10:00 PB！)", dist: "21.1 km", pace: "前 3K 比目標慢 10 秒 → 比賽配速", hr: "16K 前守住上限 → 之後放開", desc: "暖身 10~15 分鐘、3 包能量膠。前 3K 覺得太慢才是對的；16K 前心率超過上限就放慢；16K 後放開衝刺 PB！" }
         ]
       }
     ]
@@ -551,6 +551,7 @@ function updateCountdowns() {
 
   function formatDiff(targetDate) {
     const diffMs = targetDate - now;
+    if (diffMs <= -12 * 60 * 60 * 1000) return { days: 0, text: "✅ 已完賽" };
     if (diffMs <= 0) return { days: 0, text: "今日比賽日！" };
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
